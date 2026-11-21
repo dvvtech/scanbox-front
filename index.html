@@ -29,7 +29,7 @@
     .profile-card{max-width:560px}.profile-top{display:flex;align-items:center;gap:8px;margin-bottom:20px}
     .profile-copy{color:var(--muted);margin:10px 0 26px}label{display:block;margin:20px 0 8px;font-size:14px;font-weight:650}
     .field{width:100%;padding:14px 15px;border:1px solid #cfd7e5;border-radius:12px;background:#fff;color:var(--ink);outline:none;font:600 16px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em}
-    .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}.field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
+    .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}.field[readonly]{background:#f5f7fb;cursor:default}.field-label-row{display:flex;align-items:center;justify-content:space-between;margin-top:20px}.field-label-row label{margin:0 0 8px}.icon-button{width:36px;height:36px;margin:0 0 8px;padding:8px;border:0;border-radius:9px;background:#edf1f8;color:#44536b;display:grid;place-items:center}.icon-button:hover{background:#e1e8f4}.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
     .profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.profile-message{min-height:22px;margin:12px 0 0;color:#b42318;font-size:14px}
     [hidden]{display:none!important}@media(max-width:520px){main{padding-top:42px}.card{padding:20px;border-radius:20px}header{height:68px}.button{padding:11px 15px}}
   </style>
@@ -61,15 +61,21 @@
         <p class="eyebrow">Настройки устройства</p><h1>Настройки</h1>
         <p class="profile-copy">Укажите MAC-адрес и код сопряжения ScanBox. Данные сохраняются в этом браузере.</p>
         <form id="profileForm" novalidate>
-          <label for="macInput">MAC-адрес устройства</label>
-          <input id="macInput" class="field" name="mac" type="text" inputmode="text" autocomplete="off" placeholder="24:6F:28:16:7A:1C" maxlength="17" aria-describedby="macHelp">
+          <div class="field-label-row">
+            <label for="macInput">MAC-адрес устройства</label>
+            <button id="editProfileButton" class="icon-button" type="button" aria-label="Редактировать данные" title="Редактировать">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg>
+            </button>
+          </div>
+          <input id="macInput" class="field" name="mac" type="text" inputmode="text" autocomplete="off" placeholder="24:6F:28:16:7A:1C" maxlength="17" aria-describedby="macHelp" readonly>
           <p id="macHelp" class="field-help">Формат: 24:6F:28:16:7A:1C. MAC приходит в ссылке после настройки устройства.</p>
           <label for="tokenInput">Код сопряжения</label>
-          <input id="tokenInput" class="field" name="token" type="text" inputmode="text" autocomplete="off" placeholder="12345" maxlength="5" aria-describedby="tokenHelp">
+          <input id="tokenInput" class="field" name="token" type="text" inputmode="text" autocomplete="off" placeholder="12345" maxlength="5" aria-describedby="tokenHelp" readonly>
           <p id="tokenHelp" class="field-help">При переходе по ссылке со страницы настройки код сохранится автоматически. Код также показан на странице настройки.</p>
           <p id="profileMessage" class="profile-message" role="status" aria-live="polite"></p>
           <div class="profile-actions">
-            <button class="button button-primary" type="submit">Сохранить профиль</button>
+            <button id="saveProfileButton" class="button button-primary" type="submit" hidden>Сохранить</button>
+            <button id="cancelEditButton" class="button button-secondary" type="button" hidden>Отмена</button>
             <button id="removeMacButton" class="button button-secondary" type="button">Удалить профиль</button>
           </div>
         </form>
@@ -89,6 +95,12 @@
       const macInput = document.getElementById('macInput');
       const tokenInput = document.getElementById('tokenInput');
       const profileMessage = document.getElementById('profileMessage');
+      const editProfileButton = document.getElementById('editProfileButton');
+      const saveProfileButton = document.getElementById('saveProfileButton');
+      const cancelEditButton = document.getElementById('cancelEditButton');
+      const removeMacButton = document.getElementById('removeMacButton');
+      let editingProfile = false;
+      let editSnapshot = { mac: '', token: '' };
       let activeSocket = null;
       let socketTarget = '';
       let reconnectTimer = null;
@@ -122,12 +134,24 @@
       }
 
       function showHome() { profileView.hidden = true; homeView.hidden = false; }
+      function setEditMode(enabled) {
+        editingProfile = enabled;
+        macInput.readOnly = !enabled;
+        tokenInput.readOnly = !enabled;
+        editProfileButton.hidden = enabled;
+        saveProfileButton.hidden = !enabled;
+        cancelEditButton.hidden = !enabled;
+        removeMacButton.hidden = enabled || (!getMac() && !getToken());
+        if (enabled) macInput.focus();
+      }
+
       function showProfile() {
         render();
         profileMessage.textContent = '';
+        editSnapshot = { mac: macInput.value, token: tokenInput.value };
         homeView.hidden = true;
         profileView.hidden = false;
-        macInput.focus();
+        setEditMode(!getMac() || !getToken());
       }
 
       function setDeviceState(text) { deviceState.textContent = text; }
@@ -214,8 +238,20 @@
 
       document.getElementById('profileButton').addEventListener('click', showProfile);
       document.getElementById('backButton').addEventListener('click', showHome);
+      editProfileButton.addEventListener('click', () => {
+        editSnapshot = { mac: macInput.value, token: tokenInput.value };
+        profileMessage.textContent = '';
+        setEditMode(true);
+      });
+      cancelEditButton.addEventListener('click', () => {
+        macInput.value = editSnapshot.mac;
+        tokenInput.value = editSnapshot.token;
+        profileMessage.textContent = '';
+        setEditMode(false);
+      });
       document.getElementById('profileForm').addEventListener('submit', (event) => {
         event.preventDefault();
+        if (!editingProfile) return;
         const normalizedMac = normalizeMac(macInput.value);
         const normalizedToken = normalizeToken(tokenInput.value);
         if (!normalizedMac) {
@@ -233,15 +269,18 @@
         scanNotice.dataset.kind = 'success';
         scanNotice.textContent = 'Настройки устройства сохранены.';
         render();
+        setEditMode(false);
         showHome();
         connectWebSocket();
       });
-      document.getElementById('removeMacButton').addEventListener('click', () => {
+      removeMacButton.addEventListener('click', () => {
         localStorage.removeItem(MAC_KEY);
         localStorage.removeItem(TOKEN_KEY);
         scanNotice.dataset.kind = '';
         scanNotice.textContent = 'Настройки устройства удалены.';
         render();
+        editSnapshot = { mac: '', token: '' };
+        setEditMode(true);
         closeSocket();
       });
       document.getElementById('scanButton').addEventListener('click', () => {
