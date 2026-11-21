@@ -68,7 +68,7 @@
             </button>
           </div>
           <input id="macInput" class="field" name="mac" type="text" inputmode="text" autocomplete="off" placeholder="24:6F:28:16:7A:1C" maxlength="17" aria-describedby="macHelp" readonly>
-          <p id="macHelp" class="field-help">Формат: 24:6F:28:16:7A:1C. MAC приходит в ссылке после настройки устройства.</p>
+          <p id="macHelp" class="field-help">Введите 12 символов 0–9 и A–F — двоеточия появятся автоматически. MAC также приходит в ссылке после настройки устройства.</p>
           <label for="tokenInput">Код сопряжения</label>
           <input id="tokenInput" class="field" name="token" type="text" inputmode="text" autocomplete="off" placeholder="12345" maxlength="5" aria-describedby="tokenHelp" readonly>
           <p id="tokenHelp" class="field-help">При переходе по ссылке со страницы настройки код сохранится автоматически. Код также показан на странице настройки.</p>
@@ -108,6 +108,19 @@
       function normalizeMac(value) {
         const normalized = value.trim().replace(/-/g, ':').toUpperCase();
         return /^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(normalized) ? normalized : null;
+      }
+
+      function formatMacInput(value) {
+        const hex = value.replace(/[^0-9a-f]/gi, '').slice(0, 12).toUpperCase();
+        return hex.match(/.{1,2}/g)?.join(':') || '';
+      }
+
+      function handleMacInput() {
+        const caret = macInput.selectionStart ?? macInput.value.length;
+        const hexBeforeCaret = macInput.value.slice(0, caret).replace(/[^0-9a-f]/gi, '').length;
+        macInput.value = formatMacInput(macInput.value);
+        const formattedCaret = hexBeforeCaret + Math.max(0, Math.floor((hexBeforeCaret - 1) / 2));
+        macInput.setSelectionRange(formattedCaret, formattedCaret);
       }
 
       function normalizeToken(value) {
@@ -235,6 +248,8 @@
         if (normalizedToken) localStorage.setItem(TOKEN_KEY, normalizedToken);
         history.replaceState(null, '', window.location.pathname + window.location.search);
       }
+
+      macInput.addEventListener('input', handleMacInput);
 
       document.getElementById('profileButton').addEventListener('click', showProfile);
       document.getElementById('backButton').addEventListener('click', showHome);
