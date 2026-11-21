@@ -65,8 +65,8 @@
           <input id="macInput" class="field" name="mac" type="text" inputmode="text" autocomplete="off" placeholder="24:6F:28:16:7A:1C" maxlength="17" aria-describedby="macHelp">
           <p id="macHelp" class="field-help">Формат: 24:6F:28:16:7A:1C. MAC приходит в ссылке после настройки устройства.</p>
           <label for="tokenInput">Код сопряжения</label>
-          <input id="tokenInput" class="field" name="token" type="text" inputmode="text" autocomplete="off" placeholder="32 символа" maxlength="32" aria-describedby="tokenHelp">
-          <p id="tokenHelp" class="field-help">Для уже настроенного устройства код можно взять из Serial Monitor PlatformIO.</p>
+          <input id="tokenInput" class="field" name="token" type="text" inputmode="text" autocomplete="off" placeholder="12345" maxlength="5" aria-describedby="tokenHelp">
+          <p id="tokenHelp" class="field-help">При переходе по ссылке со страницы настройки код сохранится автоматически. Код также показан на странице настройки.</p>
           <p id="profileMessage" class="profile-message" role="status" aria-live="polite"></p>
           <div class="profile-actions">
             <button class="button button-primary" type="submit">Сохранить профиль</button>
@@ -100,11 +100,16 @@
 
       function normalizeToken(value) {
         const normalized = value.trim().toUpperCase();
-        return /^[0-9A-F]{32}$/.test(normalized) ? normalized : null;
+        return /^[0-9]{5}$/.test(normalized) ? normalized : null;
       }
 
       function getMac() { return localStorage.getItem(MAC_KEY); }
-      function getToken() { return localStorage.getItem(TOKEN_KEY); }
+      function getToken() {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const normalized = normalizeToken(token || '');
+        if (token && !normalized) localStorage.removeItem(TOKEN_KEY);
+        return normalized;
+      }
 
       function render() {
         const mac = getMac();
@@ -219,7 +224,7 @@
           return;
         }
         if (!normalizedToken) {
-          profileMessage.textContent = 'Введите 32-значный код сопряжения из Serial Monitor или ссылки настройки.';
+          profileMessage.textContent = 'Введите пятизначный код сопряжения со страницы настройки устройства.';
           tokenInput.focus();
           return;
         }
