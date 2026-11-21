@@ -9,42 +9,29 @@
     :root{color-scheme:light;--ink:#172033;--muted:#68758b;--blue:#2864e8;--line:#e3e8f1;--surface:#fff;--bg:#f5f7fb}
     *{box-sizing:border-box}
     body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-    button,input{font:inherit}
-    button{cursor:pointer}
-    .shell{width:min(100% - 32px,720px);margin:0 auto}
+    button,input{font:inherit}button{cursor:pointer}.shell{width:min(100% - 32px,720px);margin:0 auto}
     header{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
     .brand{display:flex;align-items:center;gap:11px;font-size:20px;font-weight:750;letter-spacing:-.04em}
     .brand-mark{width:36px;height:36px;border-radius:12px;background:var(--blue);display:grid;place-items:center;color:#fff;font-weight:800}
-    .button{border:0;border-radius:12px;padding:12px 18px;font-weight:650;transition:transform .15s,background .15s}
-    .button:active{transform:scale(.98)}
-    .button-primary{background:var(--blue);color:#fff;box-shadow:0 8px 20px #2864e82b}
-    .button-primary:hover{background:#1d53ca}
-    .button-secondary{background:#edf1f8;color:#26334a}
-    .button-quiet{background:transparent;color:var(--muted);padding:10px 12px}
-    main{padding:64px 0 48px}
-    .eyebrow{margin:0 0 12px;color:var(--blue);font-size:13px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
+    .button{border:0;border-radius:12px;padding:12px 18px;font-weight:650;transition:transform .15s,background .15s}.button:active{transform:scale(.98)}
+    .button-primary{background:var(--blue);color:#fff;box-shadow:0 8px 20px #2864e82b}.button-primary:hover{background:#1d53ca}
+    .button-secondary{background:#edf1f8;color:#26334a}.button-quiet{background:transparent;color:var(--muted);padding:10px 12px}
+    main{padding:64px 0 48px}.eyebrow{margin:0 0 12px;color:var(--blue);font-size:13px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
     h1{margin:0;font-size:clamp(34px,7vw,52px);line-height:1.08;letter-spacing:-.055em}
     .intro{max-width:520px;margin:16px 0 34px;color:var(--muted);font-size:17px}
     .card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 18px 50px #2635520b}
-    .device-row{display:flex;align-items:center;gap:14px}
-    .device-icon{width:48px;height:48px;border-radius:16px;background:#eef3ff;display:grid;place-items:center;color:var(--blue);font-size:23px}
+    .device-row{display:flex;align-items:center;gap:14px}.device-icon{width:48px;height:48px;border-radius:16px;background:#eef3ff;display:grid;place-items:center;color:var(--blue);font-size:23px}
     .device-name{margin:0;font-weight:700}.device-state{margin:2px 0 0;color:var(--muted);font-size:14px}
     .mac{margin:22px 0 20px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fafbfe}
     .mac-label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}.mac-value{font:600 15px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.035em;overflow-wrap:anywhere}
-    .scan-button{width:100%;min-height:54px;font-size:17px}
-    .notice{min-height:24px;margin:14px 2px 0;color:var(--muted);font-size:14px}
-    .notice[data-kind="error"]{color:#b42318}.notice[data-kind="success"]{color:#167647}
-    .hint{margin:24px 4px 0;color:var(--muted);font-size:13px}
+    .scan-button{width:100%;min-height:54px;font-size:17px}.notice{min-height:24px;margin:14px 2px 0;color:var(--muted);font-size:14px}
+    .notice[data-kind="error"]{color:#b42318}.notice[data-kind="success"]{color:#167647}.hint{margin:24px 4px 0;color:var(--muted);font-size:13px}
     .profile-card{max-width:560px}.profile-top{display:flex;align-items:center;gap:8px;margin-bottom:20px}
-    .profile-top h1{font-size:32px}.profile-copy{color:var(--muted);margin:10px 0 26px}
-    label{display:block;margin-bottom:8px;font-size:14px;font-weight:650}
+    .profile-copy{color:var(--muted);margin:10px 0 26px}label{display:block;margin:20px 0 8px;font-size:14px;font-weight:650}
     .field{width:100%;padding:14px 15px;border:1px solid #cfd7e5;border-radius:12px;background:#fff;color:var(--ink);outline:none;font:600 16px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em}
-    .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}
-    .field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
-    .profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
-    .profile-message{min-height:22px;margin:12px 0 0;color:#b42318;font-size:14px}
-    [hidden]{display:none!important}
-    @media(max-width:520px){main{padding-top:42px}.card{padding:20px;border-radius:20px}header{height:68px}.button{padding:11px 15px}}
+    .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}.field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
+    .profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.profile-message{min-height:22px;margin:12px 0 0;color:#b42318;font-size:14px}
+    [hidden]{display:none!important}@media(max-width:520px){main{padding-top:42px}.card{padding:20px;border-radius:20px}header{height:68px}.button{padding:11px 15px}}
   </style>
 </head>
 <body>
@@ -53,7 +40,6 @@
       <div class="brand"><span class="brand-mark" aria-hidden="true">S</span><span>ScanBox</span></div>
       <button id="profileButton" class="button button-secondary" type="button">Профиль</button>
     </header>
-
     <main id="homeView">
       <p class="eyebrow">Ваше устройство</p>
       <h1>Готовы к сканированию?</h1>
@@ -61,72 +47,76 @@
       <section class="card" aria-labelledby="deviceName">
         <div class="device-row">
           <div class="device-icon" aria-hidden="true">▦</div>
-          <div>
-            <p class="device-name" id="deviceName">ScanBox</p>
-            <p class="device-state" id="deviceState">MAC-адрес не добавлен</p>
-          </div>
+          <div><p class="device-name" id="deviceName">ScanBox</p><p class="device-state" id="deviceState">Устройство не добавлено</p></div>
         </div>
         <div class="mac"><span class="mac-label">MAC-адрес</span><span class="mac-value" id="macValue">Не указан</span></div>
         <button id="scanButton" class="button button-primary scan-button" type="button">Сканировать</button>
         <p id="scanNotice" class="notice" role="status" aria-live="polite"></p>
       </section>
-      <p class="hint">MAC-адрес хранится в профиле этого браузера на этом устройстве.</p>
+      <p class="hint">MAC и код сопряжения хранятся в профиле этого браузера.</p>
     </main>
-
     <main id="profileView" hidden>
       <section class="card profile-card">
-        <div class="profile-top">
-          <button id="backButton" class="button button-quiet" type="button" aria-label="Назад">← Назад</button>
-        </div>
-        <p class="eyebrow">Настройки устройства</p>
-        <h1>Профиль</h1>
-        <p class="profile-copy">Укажите MAC-адрес ScanBox. Он сохранится локально в этом браузере.</p>
+        <div class="profile-top"><button id="backButton" class="button button-quiet" type="button" aria-label="Назад">← Назад</button></div>
+        <p class="eyebrow">Настройки устройства</p><h1>Профиль</h1>
+        <p class="profile-copy">Укажите MAC-адрес и код сопряжения ScanBox. Данные сохраняются в этом браузере.</p>
         <form id="profileForm" novalidate>
           <label for="macInput">MAC-адрес устройства</label>
-          <input id="macInput" class="field" name="mac" type="text" inputmode="text" autocomplete="off" placeholder="24:6F:28:16:7A:1C" maxlength="17" aria-describedby="macHelp profileMessage">
-          <p id="macHelp" class="field-help">Формат: 6 пар шестнадцатеричных символов, например 24:6F:28:16:7A:1C.</p>
+          <input id="macInput" class="field" name="mac" type="text" inputmode="text" autocomplete="off" placeholder="24:6F:28:16:7A:1C" maxlength="17" aria-describedby="macHelp">
+          <p id="macHelp" class="field-help">Формат: 24:6F:28:16:7A:1C. MAC приходит в ссылке после настройки устройства.</p>
+          <label for="tokenInput">Код сопряжения</label>
+          <input id="tokenInput" class="field" name="token" type="text" inputmode="text" autocomplete="off" placeholder="32 символа" maxlength="32" aria-describedby="tokenHelp">
+          <p id="tokenHelp" class="field-help">Для уже настроенного устройства код можно взять из Serial Monitor PlatformIO.</p>
           <p id="profileMessage" class="profile-message" role="status" aria-live="polite"></p>
           <div class="profile-actions">
-            <button class="button button-primary" type="submit">Сохранить MAC</button>
-            <button id="removeMacButton" class="button button-secondary" type="button">Удалить MAC</button>
+            <button class="button button-primary" type="submit">Сохранить профиль</button>
+            <button id="removeMacButton" class="button button-secondary" type="button">Удалить профиль</button>
           </div>
         </form>
       </section>
     </main>
   </div>
-
   <script>
     (() => {
-      const STORAGE_KEY = 'scanbox.deviceMac';
+      const MAC_KEY = 'scanbox.deviceMac';
+      const TOKEN_KEY = 'scanbox.devicePairingToken';
+      const API_WS_URL = 'wss://api.scanbox.tech/ws';
       const homeView = document.getElementById('homeView');
       const profileView = document.getElementById('profileView');
       const macValue = document.getElementById('macValue');
       const deviceState = document.getElementById('deviceState');
       const scanNotice = document.getElementById('scanNotice');
       const macInput = document.getElementById('macInput');
+      const tokenInput = document.getElementById('tokenInput');
       const profileMessage = document.getElementById('profileMessage');
+      let activeSocket = null;
+      let socketTarget = '';
+      let reconnectTimer = null;
 
       function normalizeMac(value) {
-        const normalized = value.trim().replaceAll('-', ':').toUpperCase();
+        const normalized = value.trim().replace(/-/g, ':').toUpperCase();
         return /^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(normalized) ? normalized : null;
       }
 
-      function getMac() {
-        return localStorage.getItem(STORAGE_KEY);
+      function normalizeToken(value) {
+        const normalized = value.trim().toUpperCase();
+        return /^[0-9A-F]{32}$/.test(normalized) ? normalized : null;
       }
+
+      function getMac() { return localStorage.getItem(MAC_KEY); }
+      function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
       function render() {
         const mac = getMac();
+        const token = getToken();
         macValue.textContent = mac || 'Не указан';
-        deviceState.textContent = mac ? 'MAC-адрес сохранён' : 'MAC-адрес не добавлен';
         macInput.value = mac || '';
+        tokenInput.value = token || '';
+        if (!mac) deviceState.textContent = 'MAC-адрес не добавлен';
+        else if (!token) deviceState.textContent = 'Добавьте код сопряжения в профиле';
       }
 
-      function showHome() {
-        profileView.hidden = true;
-        homeView.hidden = false;
-      }
-
+      function showHome() { profileView.hidden = true; homeView.hidden = false; }
       function showProfile() {
         render();
         profileMessage.textContent = '';
@@ -135,51 +125,143 @@
         macInput.focus();
       }
 
+      function setDeviceState(text) { deviceState.textContent = text; }
+
+      function closeSocket() {
+        if (reconnectTimer) clearTimeout(reconnectTimer);
+        reconnectTimer = null;
+        if (activeSocket) {
+          const previous = activeSocket;
+          activeSocket = null;
+          previous.close();
+        }
+        socketTarget = '';
+      }
+
+      function connectWebSocket() {
+        const mac = getMac();
+        const token = getToken();
+        if (!mac || !token) {
+          closeSocket();
+          render();
+          return;
+        }
+
+        const target = mac + '|' + token;
+        if (socketTarget === target && activeSocket &&
+            (activeSocket.readyState === WebSocket.OPEN || activeSocket.readyState === WebSocket.CONNECTING)) return;
+
+        closeSocket();
+        socketTarget = target;
+        setDeviceState('Подключение к ScanBox API…');
+        const url = API_WS_URL + '?role=web&mac=' + encodeURIComponent(mac) + '&token=' + encodeURIComponent(token);
+        const socket = new WebSocket(url);
+        activeSocket = socket;
+
+        socket.addEventListener('open', () => {
+          if (activeSocket === socket) setDeviceState('Связь с API установлена, проверяем устройство…');
+        });
+        socket.addEventListener('message', (event) => {
+          if (activeSocket !== socket) return;
+          let message;
+          try { message = JSON.parse(event.data); } catch { return; }
+          if (message.type === 'deviceStatus') {
+            setDeviceState(message.online ? 'Устройство в сети' : 'Устройство не в сети');
+          } else if (message.type === 'scanQueued') {
+            scanNotice.dataset.kind = 'success';
+            scanNotice.textContent = 'Запрос передан устройству, ждём подтверждения…';
+          } else if (message.type === 'scanReceived') {
+            scanNotice.dataset.kind = 'success';
+            scanNotice.textContent = 'Устройство получило запрос. Пока прошивка только записывает его в лог.';
+          } else if (message.type === 'deviceOffline') {
+            setDeviceState('Устройство не в сети');
+            scanNotice.dataset.kind = 'error';
+            scanNotice.textContent = 'Устройство сейчас не подключено к API.';
+          } else if (message.type === 'error') {
+            scanNotice.dataset.kind = 'error';
+            scanNotice.textContent = message.message || 'Ошибка WebSocket.';
+          }
+        });
+        socket.addEventListener('error', () => {
+          if (activeSocket === socket) setDeviceState('Не удалось подключиться к API');
+        });
+        socket.addEventListener('close', () => {
+          if (activeSocket !== socket) return;
+          activeSocket = null;
+          setDeviceState('Связь потеряна, повторное подключение…');
+          reconnectTimer = setTimeout(connectWebSocket, 5000);
+        });
+      }
+
       const query = new URLSearchParams(window.location.search);
       const macFromLink = query.get('mac');
+      const fragment = new URLSearchParams(window.location.hash.slice(1));
+      const tokenFromLink = fragment.get('token');
       if (macFromLink) {
-        const normalized = normalizeMac(macFromLink);
-        if (normalized) localStorage.setItem(STORAGE_KEY, normalized);
-        history.replaceState(null, '', window.location.pathname + window.location.hash);
+        const normalizedMac = normalizeMac(macFromLink);
+        if (normalizedMac) localStorage.setItem(MAC_KEY, normalizedMac);
+      }
+      if (tokenFromLink) {
+        const normalizedToken = normalizeToken(tokenFromLink);
+        if (normalizedToken) localStorage.setItem(TOKEN_KEY, normalizedToken);
+        history.replaceState(null, '', window.location.pathname + window.location.search);
       }
 
       document.getElementById('profileButton').addEventListener('click', showProfile);
       document.getElementById('backButton').addEventListener('click', showHome);
-
       document.getElementById('profileForm').addEventListener('submit', (event) => {
         event.preventDefault();
-        const normalized = normalizeMac(macInput.value);
-        if (!normalized) {
-          profileMessage.textContent = 'Введите MAC-адрес в формате 24:6F:28:16:7A:1C.';
+        const normalizedMac = normalizeMac(macInput.value);
+        const normalizedToken = normalizeToken(tokenInput.value);
+        if (!normalizedMac) {
+          profileMessage.textContent = 'Введите MAC в формате 24:6F:28:16:7A:1C.';
           macInput.focus();
           return;
         }
-        localStorage.setItem(STORAGE_KEY, normalized);
+        if (!normalizedToken) {
+          profileMessage.textContent = 'Введите 32-значный код сопряжения из Serial Monitor или ссылки настройки.';
+          tokenInput.focus();
+          return;
+        }
+        localStorage.setItem(MAC_KEY, normalizedMac);
+        localStorage.setItem(TOKEN_KEY, normalizedToken);
         scanNotice.dataset.kind = 'success';
-        scanNotice.textContent = 'MAC-адрес сохранён.';
+        scanNotice.textContent = 'Профиль устройства сохранён.';
         render();
         showHome();
+        connectWebSocket();
       });
-
       document.getElementById('removeMacButton').addEventListener('click', () => {
-        localStorage.removeItem(STORAGE_KEY);
-        profileMessage.textContent = '';
+        localStorage.removeItem(MAC_KEY);
+        localStorage.removeItem(TOKEN_KEY);
         scanNotice.dataset.kind = '';
-        scanNotice.textContent = 'MAC-адрес удалён.';
+        scanNotice.textContent = 'Профиль устройства удалён.';
         render();
-        showHome();
+        closeSocket();
       });
-
       document.getElementById('scanButton').addEventListener('click', () => {
         const mac = getMac();
-        scanNotice.dataset.kind = mac ? '' : 'error';
-        scanNotice.textContent = mac
-          ? 'MAC сохранён, но отправка команды ещё не подключена к устройству.'
-          : 'Сначала добавьте MAC-адрес в профиле.';
-        if (!mac) showProfile();
+        const token = getToken();
+        scanNotice.dataset.kind = '';
+        if (!mac || !token) {
+          scanNotice.dataset.kind = 'error';
+          scanNotice.textContent = 'Сначала добавьте MAC и код сопряжения в профиле.';
+          showProfile();
+          return;
+        }
+        if (!activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
+          scanNotice.dataset.kind = 'error';
+          scanNotice.textContent = 'Нет соединения с API. Подключаемся, попробуйте ещё раз через несколько секунд.';
+          connectWebSocket();
+          return;
+        }
+        const requestId = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(16).slice(2));
+        activeSocket.send(JSON.stringify({ type: 'scan', requestId }));
+        scanNotice.textContent = 'Команда отправлена API…';
       });
 
       render();
+      connectWebSocket();
     })();
   </script>
 </body>
