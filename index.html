@@ -289,6 +289,8 @@
         connectWebSocket();
       });
       removeMacButton.addEventListener('click', () => {
+        const confirmed = window.confirm('Удалить профиль? MAC-адрес и код сопряжения будут удалены из этого браузера.');
+        if (!confirmed) return;
         localStorage.removeItem(MAC_KEY);
         localStorage.removeItem(TOKEN_KEY);
         scanNotice.dataset.kind = '';
