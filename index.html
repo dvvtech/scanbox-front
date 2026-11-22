@@ -21,7 +21,7 @@
     .intro{max-width:520px;margin:16px 0 34px;color:var(--muted);font-size:17px}
     .card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 18px 50px #2635520b}
     .device-row{display:flex;align-items:center;gap:14px}.device-icon{width:48px;height:48px;border-radius:16px;background:#eef3ff;display:grid;place-items:center;color:var(--blue);font-size:23px}
-    .device-name{margin:0;font-weight:700}.device-state{margin:2px 0 0;color:var(--muted);font-size:14px}
+    .device-name{margin:0;font-weight:700}.device-state{display:flex;align-items:center;gap:8px;margin:2px 0 0;color:var(--muted);font-size:14px}.device-indicator{width:9px;height:9px;flex:none;border-radius:50%;background:#c97878;box-shadow:0 0 0 3px #c978781a}.device-indicator[data-online="true"]{background:#5b9b71;box-shadow:0 0 0 3px #5b9b711a}
     .mac{margin:22px 0 20px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fafbfe}
     .schedule-date-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:22px 0 14px}.schedule-date-label{margin:0;font-size:14px;font-weight:650}.schedule-date-input{max-width:190px;padding:9px 11px;border:1px solid #cfd7e5;border-radius:10px;background:#fff;color:var(--ink);font:500 14px system-ui,-apple-system,"Segoe UI",sans-serif}
     .schedule-day{margin:0 0 12px;color:var(--muted);font-size:13px;font-weight:650}.lesson-list{display:grid;gap:8px;margin:0 0 18px;padding:0;list-style:none}.lesson-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;transition:background .2s,border-color .2s}.lesson-number{width:28px;height:28px;flex:none;border-radius:9px;background:#edf1f8;color:#526078;display:grid;place-items:center;font-size:12px;font-weight:700}.lesson-name{flex:1;font-weight:600}.lesson-result{color:var(--muted);font-size:12px}.lesson-row.lesson-detected{border-color:#c5e8d0;background:#f0fbf4}.lesson-row.lesson-detected .lesson-number{background:#d9f3e2;color:#167647}.lesson-row.lesson-detected .lesson-result{color:#167647}
@@ -54,7 +54,7 @@
       <section class="card" aria-labelledby="deviceName">
         <div class="device-row">
           <div class="device-icon" aria-hidden="true">▦</div>
-          <div><p class="device-name" id="deviceName">ScanBox</p><p class="device-state" id="deviceState">Устройство не добавлено</p></div>
+          <div><p class="device-name" id="deviceName">ScanBox</p><p class="device-state"><span id="deviceIndicator" class="device-indicator" data-online="false" aria-label="Устройство не в сети"></span><span id="deviceState">Устройство не добавлено</span></p></div>
         </div>
         <div class="schedule-date-row">
           <label class="schedule-date-label" for="scheduleDateInput">Расписание на дату</label>
@@ -149,6 +149,7 @@
       const homeView = document.getElementById('homeView');
       const profileView = document.getElementById('profileView');
       const deviceState = document.getElementById('deviceState');
+      const deviceIndicator = document.getElementById('deviceIndicator');
       const scanNotice = document.getElementById('scanNotice');
       const scanButton = document.getElementById('scanButton');
       const scheduleDateInput = document.getElementById('scheduleDateInput');
@@ -237,8 +238,8 @@
         const token = getToken();
         macInput.value = mac || '';
         tokenInput.value = token || '';
-        if (!mac) deviceState.textContent = 'MAC-адрес не добавлен';
-        else if (!token) deviceState.textContent = 'Добавьте код сопряжения в профиле';
+        if (!mac) setDeviceState('MAC-адрес не добавлен');
+        else if (!token) setDeviceState('Добавьте код сопряжения в профиле');
       }
 
       function showHome() { profileView.hidden = true; homeView.hidden = false; }
@@ -263,7 +264,11 @@
         setEditMode(!getMac() || !getToken());
       }
 
-      function setDeviceState(text) { deviceState.textContent = text; }
+      function setDeviceState(text, online = false) {
+        deviceState.textContent = text;
+        deviceIndicator.dataset.online = String(online);
+        deviceIndicator.setAttribute('aria-label', online ? 'Устройство в сети' : 'Устройство не в сети');
+      }
 
       function localDateKey(date = new Date()) {
         const year = date.getFullYear();
@@ -671,7 +676,7 @@
           let message;
           try { message = JSON.parse(event.data); } catch { return; }
           if (message.type === 'deviceStatus') {
-            setDeviceState(message.online ? 'Устройство в сети' : 'Устройство не в сети');
+            setDeviceState(message.online ? 'Устройство в сети' : 'Устройство не в сети', message.online === true);
           } else if (message.type === 'subjects') {
             schoolSubjects = Array.isArray(message.subjects) ? message.subjects : [];
             renderSubjectMappings();
