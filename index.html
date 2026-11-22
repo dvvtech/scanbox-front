@@ -27,6 +27,9 @@
     .scan-button{width:100%;min-height:54px;font-size:17px}.notice{min-height:24px;margin:14px 2px 0;color:var(--muted);font-size:14px}
     .notice[data-kind="error"]{color:#b42318}.notice[data-kind="success"]{color:#167647}.hint{margin:24px 4px 0;color:var(--muted);font-size:13px}
     .profile-card{max-width:560px}.profile-top{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+    .settings-tabs{display:flex;gap:6px;padding:5px;margin:0 0 24px;border-radius:14px;background:#f1f4f9}.settings-tab{flex:1;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-weight:650}.settings-tab[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 2px 8px #17203312}
+    .subject-toolbar{display:flex;justify-content:flex-end;margin:-4px 0 14px}.mapping-form{margin:0 0 20px;padding:18px;border:1px solid var(--line);border-radius:16px;background:#fafbfe}.mapping-form label{margin-top:0}.mapping-form .field{font-family:inherit;font-weight:550}.mapping-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.tag-scan-message{min-height:22px;margin:12px 0 0;color:var(--muted);font-size:14px}.tag-scan-candidate{margin-top:16px;padding:14px;border:1px solid #b7e4c7;border-radius:12px;background:#f0fbf4}.tag-scan-candidate strong{display:block;margin-bottom:8px}.tag-scan-candidate code{font:600 14px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+    .subject-list{display:grid;gap:10px}.subject-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff}.subject-name{margin:0;font-weight:650}.subject-tag{margin:3px 0 0;color:var(--muted);font:13px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.subject-unassigned{font:13px system-ui,-apple-system,"Segoe UI",sans-serif;color:#8a94a6}.subject-delete{flex:none;padding:8px 11px;border:0;border-radius:9px;background:#fff0ef;color:#b42318;font-size:13px;font-weight:650}.subject-delete:hover{background:#ffe2df}.subject-status{min-height:22px;margin:0 0 14px;color:var(--muted);font-size:14px}.subject-status[data-kind="error"]{color:#b42318}.subject-status[data-kind="success"]{color:#167647}
     .profile-copy{color:var(--muted);margin:10px 0 26px}label{display:block;margin:20px 0 8px;font-size:14px;font-weight:650}
     .field{width:100%;padding:14px 15px;border:1px solid #cfd7e5;border-radius:12px;background:#fff;color:var(--ink);outline:none;font:600 16px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em}
     .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}.field[readonly]{background:#f5f7fb;cursor:default}.field-label-row{display:flex;align-items:center;justify-content:space-between;margin-top:20px}.field-label-row label{margin:0 0 8px}.icon-button{width:36px;height:36px;margin:0 0 8px;padding:8px;border:0;border-radius:9px;background:#edf1f8;color:#44536b;display:grid;place-items:center}.icon-button:hover{background:#e1e8f4}.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
@@ -60,6 +63,11 @@
     <main id="profileView" hidden>
       <section class="card profile-card">
         <div class="profile-top"><button id="backButton" class="button button-quiet" type="button" aria-label="Назад">← Назад</button></div>
+        <div class="settings-tabs" role="tablist" aria-label="Разделы настроек">
+          <button id="profileTab" class="settings-tab" type="button" role="tab" aria-selected="true" aria-controls="profileSettingsPanel">Профиль</button>
+          <button id="subjectsTab" class="settings-tab" type="button" role="tab" aria-selected="false" aria-controls="subjectsPanel">Предметы</button>
+        </div>
+        <div id="profileSettingsPanel" role="tabpanel" aria-labelledby="profileTab">
         <p class="eyebrow">Настройки устройства</p><h1>Настройки</h1>
         <p class="profile-copy">Укажите MAC-адрес и код сопряжения ScanBox. Данные сохраняются в этом браузере.</p>
         <form id="profileForm" novalidate>
@@ -81,6 +89,29 @@
             <button id="removeMacButton" class="button button-secondary" type="button">Удалить профиль</button>
           </div>
         </form>
+        </div>
+        <section id="subjectsPanel" role="tabpanel" aria-labelledby="subjectsTab" hidden>
+          <p class="eyebrow">Содержимое устройства</p>
+          <h2>Предметы и RFID-метки</h2>
+          <p class="profile-copy">Здесь показаны предметы и привязанные к ним метки, сохранённые на устройстве.</p>
+          <p id="subjectStatus" class="subject-status" role="status" aria-live="polite">Ожидаем данные устройства…</p>
+          <div class="subject-toolbar"><button id="addMappingButton" class="button button-primary" type="button">Добавить метку</button></div>
+          <div id="addMappingPanel" class="mapping-form" hidden>
+            <label for="subjectSelect">Выберите предмет</label>
+            <select id="subjectSelect" class="field"></select>
+            <div class="mapping-form-actions">
+              <button id="scanTagButton" class="button button-secondary" type="button">Сканировать метку</button>
+              <button id="cancelMappingButton" class="button button-quiet" type="button">Отмена</button>
+            </div>
+            <p id="tagScanMessage" class="tag-scan-message" role="status" aria-live="polite"></p>
+            <div id="tagCandidate" class="tag-scan-candidate" hidden>
+              <strong>Найдена одна метка</strong>
+              <code id="tagCandidateValue"></code>
+              <div class="mapping-form-actions"><button id="confirmTagButton" class="button button-primary" type="button">Подтвердить привязку</button></div>
+            </div>
+          </div>
+          <div id="subjectsList" class="subject-list"></div>
+        </section>
       </section>
     </main>
   </div>
@@ -113,6 +144,26 @@
       const deleteConfirmDialog = document.getElementById('deleteConfirmDialog');
       const cancelDeleteButton = document.getElementById('cancelDeleteButton');
       const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+      const profileTab = document.getElementById('profileTab');
+      const subjectsTab = document.getElementById('subjectsTab');
+      const profileSettingsPanel = document.getElementById('profileSettingsPanel');
+      const subjectsPanel = document.getElementById('subjectsPanel');
+      const subjectStatus = document.getElementById('subjectStatus');
+      const subjectsList = document.getElementById('subjectsList');
+      const addMappingButton = document.getElementById('addMappingButton');
+      const addMappingPanel = document.getElementById('addMappingPanel');
+      const subjectSelect = document.getElementById('subjectSelect');
+      const scanTagButton = document.getElementById('scanTagButton');
+      const cancelMappingButton = document.getElementById('cancelMappingButton');
+      const tagScanMessage = document.getElementById('tagScanMessage');
+      const tagCandidate = document.getElementById('tagCandidate');
+      const tagCandidateValue = document.getElementById('tagCandidateValue');
+      const confirmTagButton = document.getElementById('confirmTagButton');
+      let pendingTagScanSubjectId = 0;
+      let pendingTagCandidate = null;
+      let schoolSubjects = [];
+      let tagMappings = new Map();
+      let pendingMappingDeletes = new Map();
       let editingProfile = false;
       let editSnapshot = { mac: '', token: '' };
       let activeSocket = null;
@@ -173,6 +224,7 @@
       }
 
       function showProfile() {
+        setSettingsTab('profile');
         render();
         profileMessage.textContent = '';
         editSnapshot = { mac: macInput.value, token: tokenInput.value };
@@ -182,6 +234,193 @@
       }
 
       function setDeviceState(text) { deviceState.textContent = text; }
+
+      function renderSubjectMappings() {
+        subjectsList.replaceChildren();
+        for (const subject of schoolSubjects) {
+          const subjectId = Number(subject.id);
+          const mapping = tagMappings.get(subjectId);
+          const pending = pendingMappingDeletes.has(subjectId);
+          const row = document.createElement('article');
+          row.className = 'subject-row';
+
+          const details = document.createElement('div');
+          const name = document.createElement('p');
+          name.className = 'subject-name';
+          name.textContent = subject.name;
+          const tag = document.createElement('p');
+          tag.className = mapping ? 'subject-tag' : 'subject-unassigned';
+          tag.textContent = pending ? 'Удаление метки…' : (mapping ? mapping.rfidTag : 'Метка не привязана');
+          details.append(name, tag);
+          row.append(details);
+
+          if (mapping && !pending) {
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'subject-delete';
+            removeButton.textContent = 'Удалить';
+            removeButton.setAttribute('aria-label', 'Удалить RFID-метку для предмета ' + subject.name);
+            removeButton.addEventListener('click', () => requestMappingDelete(subjectId));
+            row.append(removeButton);
+          }
+          subjectsList.append(row);
+        }
+        renderSubjectOptions();
+      }
+
+      function renderSubjectOptions() {
+        const previousValue = subjectSelect.value;
+        subjectSelect.replaceChildren(new Option('Выберите предмет', ''));
+        const availableSubjects = schoolSubjects.filter(subject => !tagMappings.has(Number(subject.id)));
+        for (const subject of availableSubjects) {
+          subjectSelect.append(new Option(subject.name, String(subject.id)));
+        }
+        if (availableSubjects.some(subject => String(subject.id) === previousValue)) {
+          subjectSelect.value = previousValue;
+        }
+        scanTagButton.disabled = availableSubjects.length === 0;
+        if (availableSubjects.length === 0 && schoolSubjects.length) {
+          tagScanMessage.textContent = 'Все предметы уже связаны с метками.';
+        }
+      }
+
+      function openMappingForm() {
+        renderSubjectOptions();
+        tagCandidate.hidden = true;
+        pendingTagCandidate = null;
+        tagScanMessage.textContent = '';
+        addMappingPanel.hidden = false;
+        subjectSelect.focus();
+      }
+
+      function requestTagScan() {
+        const subjectId = Number(subjectSelect.value);
+        if (!subjectId) {
+          tagScanMessage.textContent = 'Сначала выберите предмет.';
+          return;
+        }
+        if (!activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
+          tagScanMessage.textContent = 'Нет соединения с API. Подключите устройство и попробуйте снова.';
+          return;
+        }
+
+        pendingTagScanSubjectId = subjectId;
+        pendingTagCandidate = null;
+        tagCandidate.hidden = true;
+        scanTagButton.disabled = true;
+        tagScanMessage.textContent = 'Поднесите к устройству одну метку. Сканирование длится 2 секунды…';
+        try {
+          activeSocket.send(JSON.stringify({ type: 'scanTag', subjectId }));
+        } catch {
+          pendingTagScanSubjectId = 0;
+          scanTagButton.disabled = false;
+          tagScanMessage.textContent = 'Не удалось отправить команду сканирования.';
+        }
+      }
+
+      function handleTagScanResult(message) {
+        if (!pendingTagScanSubjectId || Number(message.subjectId) !== pendingTagScanSubjectId) return;
+        pendingTagScanSubjectId = 0;
+        scanTagButton.disabled = false;
+        confirmTagButton.disabled = false;
+        if (message.success && typeof message.rfidTag === 'string') {
+          pendingTagCandidate = { subjectId: Number(message.subjectId), rfidTag: message.rfidTag };
+          tagCandidateValue.textContent = message.rfidTag;
+          tagCandidate.hidden = false;
+          tagScanMessage.textContent = 'Проверьте метку и подтвердите сохранение на устройстве.';
+        } else {
+          tagCandidate.hidden = true;
+          const count = Number(message.tagCount) || 0;
+          tagScanMessage.textContent = message.message
+            || (count > 1
+              ? 'Обнаружено несколько меток. Уберите лишние и нажмите «Сканировать метку» ещё раз.'
+              : 'Метка не обнаружена. Поднесите одну метку и повторите сканирование.');
+        }
+      }
+
+      function confirmTagMapping() {
+        if (!pendingTagCandidate || !activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
+          tagScanMessage.textContent = 'Нет соединения с устройством. Повторите сканирование.';
+          return;
+        }
+        confirmTagButton.disabled = true;
+        tagScanMessage.textContent = 'Отправляем подтверждение на устройство…';
+        activeSocket.send(JSON.stringify({
+          type: 'confirmTagMapping',
+          subjectId: pendingTagCandidate.subjectId,
+          rfidTag: pendingTagCandidate.rfidTag
+        }));
+      }
+
+      function setSettingsTab(tab) {
+        const showSubjects = tab === 'subjects';
+        profileSettingsPanel.hidden = showSubjects;
+        subjectsPanel.hidden = !showSubjects;
+        profileTab.setAttribute('aria-selected', String(!showSubjects));
+        subjectsTab.setAttribute('aria-selected', String(showSubjects));
+        if (showSubjects) renderSubjectMappings();
+      }
+
+      function applyTagMappings(message) {
+        if (!Array.isArray(message.mappings)) return;
+        tagMappings = new Map(message.mappings
+          .filter(item => Number.isInteger(Number(item.subjectId)) && typeof item.rfidTag === 'string')
+          .map(item => [Number(item.subjectId), { rfidTag: item.rfidTag }]));
+        pendingMappingDeletes.clear();
+        renderSubjectMappings();
+        subjectStatus.dataset.kind = '';
+        subjectStatus.textContent = 'Список меток получен с устройства.';
+        renderSubjectOptions();
+      }
+
+      function requestMappingDelete(subjectId) {
+        const mapping = tagMappings.get(subjectId);
+        if (!mapping) return;
+        if (!activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
+          subjectStatus.dataset.kind = 'error';
+          subjectStatus.textContent = 'Нет связи с устройством. Удаление не отправлено.';
+          return;
+        }
+
+        pendingMappingDeletes.set(subjectId, mapping);
+        tagMappings.delete(subjectId);
+        renderSubjectMappings();
+        subjectStatus.dataset.kind = '';
+        subjectStatus.textContent = 'Отправляем команду на устройство…';
+        try {
+          activeSocket.send(JSON.stringify({ type: 'deleteTagMapping', subjectId }));
+        } catch {
+          tagMappings.set(subjectId, mapping);
+          pendingMappingDeletes.delete(subjectId);
+          renderSubjectMappings();
+          subjectStatus.dataset.kind = 'error';
+          subjectStatus.textContent = 'Не удалось отправить команду. Метка восстановлена в списке.';
+        }
+      }
+
+      function handleTagMappingDeleted(message) {
+        const subjectId = Number(message.subjectId);
+        const previous = pendingMappingDeletes.get(subjectId);
+        pendingMappingDeletes.delete(subjectId);
+        if (message.success) {
+          tagMappings.delete(subjectId);
+          subjectStatus.dataset.kind = 'success';
+          subjectStatus.textContent = 'Привязка удалена из памяти устройства.';
+        } else {
+          if (previous) tagMappings.set(subjectId, previous);
+          subjectStatus.dataset.kind = 'error';
+          subjectStatus.textContent = message.message || 'Устройство не удалило привязку.';
+        }
+        renderSubjectMappings();
+      }
+
+      function restorePendingMappingDeletes() {
+        for (const [subjectId, mapping] of pendingMappingDeletes) {
+          tagMappings.set(subjectId, mapping);
+        }
+        pendingMappingDeletes.clear();
+        renderSubjectMappings();
+      }
 
       function closeSocket() {
         if (reconnectTimer) clearTimeout(reconnectTimer);
@@ -223,6 +462,34 @@
           try { message = JSON.parse(event.data); } catch { return; }
           if (message.type === 'deviceStatus') {
             setDeviceState(message.online ? 'Устройство в сети' : 'Устройство не в сети');
+          } else if (message.type === 'subjects') {
+            schoolSubjects = Array.isArray(message.subjects) ? message.subjects : [];
+            renderSubjectMappings();
+            subjectStatus.textContent = schoolSubjects.length ? 'Предметы загружены. Ожидаем привязки с устройства…' : 'Список предметов пуст.';
+          } else if (message.type === 'tagMappings') {
+            applyTagMappings(message);
+          } else if (message.type === 'tagScanQueued') {
+            tagScanMessage.textContent = 'Устройство сканирует метку в течение 2 секунд…';
+          } else if (message.type === 'tagScanResult') {
+            handleTagScanResult(message);
+          } else if (message.type === 'tagMappingConfirmQueued') {
+            tagScanMessage.textContent = 'Устройство сохраняет привязку…';
+          } else if (message.type === 'tagMappingSaved') {
+            confirmTagButton.disabled = false;
+            if (message.success) {
+              tagCandidate.hidden = true;
+              pendingTagCandidate = null;
+              addMappingPanel.hidden = true;
+              subjectStatus.dataset.kind = 'success';
+              subjectStatus.textContent = 'Метка сохранена в памяти устройства.';
+            } else {
+              tagScanMessage.textContent = 'Устройство не подтвердило привязку. Повторите сканирование.';
+            }
+          } else if (message.type === 'tagMappingDeleteQueued') {
+            subjectStatus.dataset.kind = '';
+            subjectStatus.textContent = 'Команда удаления передана устройству…';
+          } else if (message.type === 'tagMappingDeleted') {
+            handleTagMappingDeleted(message);
           } else if (message.type === 'scanQueued') {
             scanNotice.dataset.kind = 'success';
             scanNotice.textContent = 'Запрос передан устройству, ждём подтверждения…';
@@ -230,10 +497,21 @@
             scanNotice.dataset.kind = 'success';
             scanNotice.textContent = 'Устройство получило запрос. Пока прошивка только записывает его в лог.';
           } else if (message.type === 'deviceOffline') {
+            if (pendingTagScanSubjectId) tagScanMessage.textContent = 'Устройство не в сети. Попробуйте позже.';
+            pendingTagScanSubjectId = 0;
+            scanTagButton.disabled = false;
             setDeviceState('Устройство не в сети');
+            restorePendingMappingDeletes();
             scanNotice.dataset.kind = 'error';
             scanNotice.textContent = 'Устройство сейчас не подключено к API.';
           } else if (message.type === 'error') {
+            confirmTagButton.disabled = false;
+            if (pendingTagScanSubjectId) tagScanMessage.textContent = message.message || 'Ошибка сканирования.';
+            pendingTagScanSubjectId = 0;
+            scanTagButton.disabled = false;
+            if (pendingMappingDeletes.size) restorePendingMappingDeletes();
+            subjectStatus.dataset.kind = 'error';
+            subjectStatus.textContent = message.message || 'Ошибка при выполнении команды.';
             scanNotice.dataset.kind = 'error';
             scanNotice.textContent = message.message || 'Ошибка WebSocket.';
           }
@@ -244,6 +522,7 @@
         socket.addEventListener('close', () => {
           if (activeSocket !== socket) return;
           activeSocket = null;
+          restorePendingMappingDeletes();
           setDeviceState('Связь потеряна, повторное подключение…');
           reconnectTimer = setTimeout(connectWebSocket, 5000);
         });
@@ -267,6 +546,17 @@
 
       document.getElementById('profileButton').addEventListener('click', showProfile);
       document.getElementById('backButton').addEventListener('click', showHome);
+      profileTab.addEventListener('click', () => setSettingsTab('profile'));
+      subjectsTab.addEventListener('click', () => setSettingsTab('subjects'));
+      addMappingButton.addEventListener('click', openMappingForm);
+      cancelMappingButton.addEventListener('click', () => {
+        addMappingPanel.hidden = true;
+        pendingTagScanSubjectId = 0;
+        scanTagButton.disabled = false;
+        pendingTagCandidate = null;
+      });
+      scanTagButton.addEventListener('click', requestTagScan);
+      confirmTagButton.addEventListener('click', confirmTagMapping);
       editProfileButton.addEventListener('click', () => {
         editSnapshot = { mac: macInput.value, token: tokenInput.value };
         profileMessage.textContent = '';
