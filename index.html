@@ -75,7 +75,7 @@
           <span class="success-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg></span>
           <span>Все предметы на месте!</span>
         </div>
-        <button id="scanButton" class="button button-primary scan-button" type="button">Сканировать 5 секунд</button>
+        <button id="scanButton" class="button button-primary scan-button" type="button">Сканировать</button>
         <p id="scanNotice" class="notice" role="status" aria-live="polite"></p>
       </section>
       <p class="hint">MAC и код сопряжения хранятся в профиле этого браузера.</p>
@@ -281,7 +281,7 @@
         scheduleScanRunning = false;
         scheduleDateInput.disabled = false;
         scanButton.disabled = false;
-        scanButton.textContent = 'Сканировать 5 секунд';
+        scanButton.textContent = 'Сканировать';
       }
 
       function renderSelectedSchedule() {
