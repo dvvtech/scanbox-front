@@ -31,6 +31,8 @@
     .field{width:100%;padding:14px 15px;border:1px solid #cfd7e5;border-radius:12px;background:#fff;color:var(--ink);outline:none;font:600 16px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em}
     .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}.field[readonly]{background:#f5f7fb;cursor:default}.field-label-row{display:flex;align-items:center;justify-content:space-between;margin-top:20px}.field-label-row label{margin:0 0 8px}.icon-button{width:36px;height:36px;margin:0 0 8px;padding:8px;border:0;border-radius:9px;background:#edf1f8;color:#44536b;display:grid;place-items:center}.icon-button:hover{background:#e1e8f4}.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
     .profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.profile-message{min-height:22px;margin:12px 0 0;color:#b42318;font-size:14px}
+    .confirm-dialog{width:min(100% - 32px,420px);padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);box-shadow:0 24px 80px #17203333}
+    .confirm-dialog::backdrop{background:#17203366;backdrop-filter:blur(3px)}.confirm-icon{width:46px;height:46px;margin-bottom:18px;border-radius:15px;background:#fff0ef;color:#b42318;display:grid;place-items:center}.confirm-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.confirm-dialog h2{margin:0;font-size:22px;line-height:1.25;letter-spacing:-.03em}.confirm-dialog p{margin:10px 0 24px;color:var(--muted);font-size:15px}.confirm-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}.button-danger{background:#c4322b;color:#fff}.button-danger:hover{background:#a92722}
     [hidden]{display:none!important}@media(max-width:520px){main{padding-top:42px}.card{padding:20px;border-radius:20px}header{height:68px}.button{padding:11px 15px}}
   </style>
 </head>
@@ -82,6 +84,15 @@
       </section>
     </main>
   </div>
+  <dialog id="deleteConfirmDialog" class="confirm-dialog" aria-labelledby="deleteDialogTitle" aria-describedby="deleteDialogDescription">
+    <div class="confirm-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="m19 6-1 14H6L5 6"></path><path d="M10 11v5M14 11v5"></path></svg></div>
+    <h2 id="deleteDialogTitle">Удалить профиль?</h2>
+    <p id="deleteDialogDescription">MAC-адрес и код сопряжения будут удалены из этого браузера. Чтобы снова управлять устройством, добавьте данные заново.</p>
+    <div class="confirm-actions">
+      <button id="cancelDeleteButton" class="button button-secondary" type="button">Отмена</button>
+      <button id="confirmDeleteButton" class="button button-danger" type="button">Удалить профиль</button>
+    </div>
+  </dialog>
   <script>
     (() => {
       const MAC_KEY = 'scanbox.deviceMac';
@@ -99,6 +110,9 @@
       const saveProfileButton = document.getElementById('saveProfileButton');
       const cancelEditButton = document.getElementById('cancelEditButton');
       const removeMacButton = document.getElementById('removeMacButton');
+      const deleteConfirmDialog = document.getElementById('deleteConfirmDialog');
+      const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+      const confirmDeleteButton = document.getElementById('confirmDeleteButton');
       let editingProfile = false;
       let editSnapshot = { mac: '', token: '' };
       let activeSocket = null;
@@ -288,9 +302,10 @@
         showHome();
         connectWebSocket();
       });
-      removeMacButton.addEventListener('click', () => {
-        const confirmed = window.confirm('Удалить профиль? MAC-адрес и код сопряжения будут удалены из этого браузера.');
-        if (!confirmed) return;
+      removeMacButton.addEventListener('click', () => deleteConfirmDialog.showModal());
+      cancelDeleteButton.addEventListener('click', () => deleteConfirmDialog.close());
+      confirmDeleteButton.addEventListener('click', () => {
+        deleteConfirmDialog.close();
         localStorage.removeItem(MAC_KEY);
         localStorage.removeItem(TOKEN_KEY);
         scanNotice.dataset.kind = '';
