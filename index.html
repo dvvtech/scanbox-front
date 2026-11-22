@@ -33,8 +33,8 @@
     .notice[data-kind="error"]{color:#b42318}.notice[data-kind="success"]{color:#167647}.hint{margin:24px 4px 0;color:var(--muted);font-size:13px}
     .profile-card{max-width:560px}.profile-top{display:flex;align-items:center;gap:8px;margin-bottom:20px}
     .settings-tabs{display:flex;gap:6px;padding:5px;margin:0 0 24px;border-radius:14px;background:#f1f4f9}.settings-tab{flex:1;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-weight:650}.settings-tab[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 2px 8px #17203312}
-    .subject-toolbar{display:flex;justify-content:flex-end;margin:-4px 0 14px}.mapping-form{margin:0 0 20px;padding:18px;border:1px solid var(--line);border-radius:16px;background:#fafbfe}.mapping-form label{margin-top:0}.mapping-form .field{font-family:inherit;font-weight:550}.mapping-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.tag-scan-message{min-height:22px;margin:12px 0 0;color:var(--muted);font-size:14px}.tag-scan-candidate{margin-top:16px;padding:14px;border:1px solid #b7e4c7;border-radius:12px;background:#f0fbf4}.tag-scan-candidate strong{display:block;margin-bottom:8px}.tag-scan-candidate code{font:600 14px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
-    .subject-list{display:grid;gap:10px}.subject-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff}.subject-name{margin:0;font-weight:650}.subject-tag{margin:3px 0 0;color:var(--muted);font:13px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.subject-unassigned{font:13px system-ui,-apple-system,"Segoe UI",sans-serif;color:#8a94a6}.subject-delete{flex:none;width:38px;height:38px;padding:9px;border:0;border-radius:10px;background:#fff0ef;color:#b42318;display:grid;place-items:center}.subject-delete:hover{background:#ffe2df}.subject-delete svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.subject-status{min-height:22px;margin:0 0 14px;color:var(--muted);font-size:14px}.subject-status[data-kind="error"]{color:#b42318}.subject-status[data-kind="success"]{color:#167647}
+    .mapping-form{margin-top:12px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#fafbfe}.mapping-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.tag-scan-message{min-height:22px;margin:12px 0 0;color:var(--muted);font-size:14px}.tag-scan-candidate{margin-top:16px;padding:14px;border:1px solid #b7e4c7;border-radius:12px;background:#f0fbf4}.tag-scan-candidate strong{display:block;margin-bottom:8px}.tag-scan-candidate code{font:600 14px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+    .subject-list{display:grid;gap:10px}.subject-entry{display:grid;gap:0}.subject-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff}.subject-name{margin:0;font-weight:650}.subject-tag{margin:3px 0 0;color:var(--muted);font:13px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.subject-bind{flex:none;padding:9px 12px;border:0;border-radius:10px;background:#edf3ff;color:var(--blue);font-size:13px;font-weight:650;white-space:nowrap}.subject-bind:hover{background:#e0eaff}.subject-delete{flex:none;width:38px;height:38px;padding:9px;border:0;border-radius:10px;background:#fff0ef;color:#b42318;display:grid;place-items:center}.subject-delete:hover{background:#ffe2df}.subject-delete svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.subject-status{min-height:22px;margin:0 0 14px;color:var(--muted);font-size:14px}.subject-status[data-kind="error"]{color:#b42318}.subject-status[data-kind="success"]{color:#167647}
     .profile-copy{color:var(--muted);margin:10px 0 26px}label{display:block;margin:20px 0 8px;font-size:14px;font-weight:650}
     .field{width:100%;padding:14px 15px;border:1px solid #cfd7e5;border-radius:12px;background:#fff;color:var(--ink);outline:none;font:600 16px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em}
     .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}.field[readonly]{background:#f5f7fb;cursor:default}.field-label-row{display:flex;align-items:center;justify-content:space-between;margin-top:20px}.field-label-row label{margin:0 0 8px}.icon-button{width:36px;height:36px;margin:0 0 8px;padding:8px;border:0;border-radius:9px;background:#edf1f8;color:#44536b;display:grid;place-items:center}.icon-button:hover{background:#e1e8f4}.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
@@ -119,10 +119,7 @@
           <h2>Предметы и RFID-метки</h2>
           <p class="profile-copy">Здесь показаны предметы и привязанные к ним метки, сохранённые на устройстве.</p>
           <p id="subjectStatus" class="subject-status" role="status" aria-live="polite">Ожидаем данные устройства…</p>
-          <div class="subject-toolbar"><button id="addMappingButton" class="button button-primary" type="button">Добавить метку</button></div>
           <div id="addMappingPanel" class="mapping-form" hidden>
-            <label for="subjectSelect">Выберите предмет</label>
-            <select id="subjectSelect" class="field"></select>
             <div class="mapping-form-actions">
               <button id="scanTagButton" class="button button-secondary" type="button">Сканировать метку</button>
               <button id="cancelMappingButton" class="button button-quiet" type="button">Отмена</button>
@@ -183,9 +180,7 @@
       const subjectsPanel = document.getElementById('subjectsPanel');
       const subjectStatus = document.getElementById('subjectStatus');
       const subjectsList = document.getElementById('subjectsList');
-      const addMappingButton = document.getElementById('addMappingButton');
       const addMappingPanel = document.getElementById('addMappingPanel');
-      const subjectSelect = document.getElementById('subjectSelect');
       const scanTagButton = document.getElementById('scanTagButton');
       const cancelMappingButton = document.getElementById('cancelMappingButton');
       const tagScanMessage = document.getElementById('tagScanMessage');
@@ -194,6 +189,7 @@
       const confirmTagButton = document.getElementById('confirmTagButton');
       let pendingTagScanSubjectId = 0;
       let pendingTagCandidate = null;
+      let activeMappingSubjectId = 0;
       let schoolSubjects = [];
       let tagMappings = new Map();
       let pendingMappingDeletes = new Map();
@@ -460,6 +456,8 @@
           const subjectId = Number(subject.id);
           const mapping = tagMappings.get(subjectId);
           const pending = pendingMappingDeletes.has(subjectId);
+          const entry = document.createElement('div');
+          entry.className = 'subject-entry';
           const row = document.createElement('article');
           row.className = 'subject-row';
 
@@ -467,10 +465,13 @@
           const name = document.createElement('p');
           name.className = 'subject-name';
           name.textContent = subject.name;
-          const tag = document.createElement('p');
-          tag.className = mapping ? 'subject-tag' : 'subject-unassigned';
-          tag.textContent = pending ? 'Удаление метки…' : (mapping ? formatRfidTag(mapping.rfidTag) : 'Метка не привязана');
-          details.append(name, tag);
+          details.append(name);
+          if (pending || mapping) {
+            const tag = document.createElement('p');
+            tag.className = 'subject-tag';
+            tag.textContent = pending ? 'Удаление метки…' : formatRfidTag(mapping.rfidTag);
+            details.append(tag);
+          }
           row.append(details);
 
           if (mapping && !pending) {
@@ -482,41 +483,37 @@
             removeButton.setAttribute('aria-label', 'Удалить RFID-метку для предмета ' + subject.name);
             removeButton.addEventListener('click', () => requestMappingDelete(subjectId));
             row.append(removeButton);
+          } else if (!pending) {
+            const bindButton = document.createElement('button');
+            bindButton.type = 'button';
+            bindButton.className = 'subject-bind';
+            bindButton.textContent = 'Привязать метку';
+            bindButton.setAttribute('aria-label', 'Привязать RFID-метку к предмету ' + subject.name);
+            bindButton.addEventListener('click', () => openMappingForSubject(subjectId));
+            row.append(bindButton);
           }
-          subjectsList.append(row);
-        }
-        renderSubjectOptions();
-      }
-
-      function renderSubjectOptions() {
-        const previousValue = subjectSelect.value;
-        subjectSelect.replaceChildren(new Option('Выберите предмет', ''));
-        const availableSubjects = schoolSubjects.filter(subject => !tagMappings.has(Number(subject.id)));
-        for (const subject of availableSubjects) {
-          subjectSelect.append(new Option(subject.name, String(subject.id)));
-        }
-        if (availableSubjects.some(subject => String(subject.id) === previousValue)) {
-          subjectSelect.value = previousValue;
-        }
-        scanTagButton.disabled = availableSubjects.length === 0;
-        if (availableSubjects.length === 0 && schoolSubjects.length) {
-          tagScanMessage.textContent = 'Все предметы уже связаны с метками.';
+          entry.append(row);
+          if (subjectId === activeMappingSubjectId && !mapping && !pending) entry.append(addMappingPanel);
+          subjectsList.append(entry);
         }
       }
 
-      function openMappingForm() {
-        renderSubjectOptions();
+      function openMappingForSubject(subjectId) {
+        activeMappingSubjectId = subjectId;
         tagCandidate.hidden = true;
         pendingTagCandidate = null;
+        pendingTagScanSubjectId = 0;
+        scanTagButton.disabled = false;
         tagScanMessage.textContent = '';
         addMappingPanel.hidden = false;
-        subjectSelect.focus();
+        renderSubjectMappings();
+        scanTagButton.focus();
       }
 
       function requestTagScan() {
-        const subjectId = Number(subjectSelect.value);
+        const subjectId = activeMappingSubjectId;
         if (!subjectId) {
-          tagScanMessage.textContent = 'Сначала выберите предмет.';
+          tagScanMessage.textContent = 'Сначала нажмите «Привязать метку» напротив предмета.';
           return;
         }
         if (!activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
@@ -590,7 +587,6 @@
         renderSubjectMappings();
         subjectStatus.dataset.kind = '';
         subjectStatus.textContent = 'Список меток получен с устройства.';
-        renderSubjectOptions();
       }
 
       function requestMappingDelete(subjectId) {
@@ -707,7 +703,9 @@
             if (message.success) {
               tagCandidate.hidden = true;
               pendingTagCandidate = null;
+              activeMappingSubjectId = 0;
               addMappingPanel.hidden = true;
+              renderSubjectMappings();
               subjectStatus.dataset.kind = 'success';
               subjectStatus.textContent = 'Метка сохранена в памяти устройства.';
             } else {
@@ -778,12 +776,13 @@
       document.getElementById('backButton').addEventListener('click', showHome);
       profileTab.addEventListener('click', () => setSettingsTab('profile'));
       subjectsTab.addEventListener('click', () => setSettingsTab('subjects'));
-      addMappingButton.addEventListener('click', openMappingForm);
       cancelMappingButton.addEventListener('click', () => {
         addMappingPanel.hidden = true;
+        activeMappingSubjectId = 0;
         pendingTagScanSubjectId = 0;
         scanTagButton.disabled = false;
         pendingTagCandidate = null;
+        renderSubjectMappings();
       });
       scanTagButton.addEventListener('click', requestTagScan);
       confirmTagButton.addEventListener('click', confirmTagMapping);
