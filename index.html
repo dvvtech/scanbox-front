@@ -22,6 +22,7 @@
     .card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 18px 50px #2635520b}
     .device-row{display:flex;align-items:center;gap:14px}.device-icon{width:48px;height:48px;border-radius:16px;background:#eef3ff;display:grid;place-items:center;color:var(--blue);font-size:23px}
     .device-name{margin:0;font-weight:700}.device-state{display:flex;align-items:center;gap:8px;margin:2px 0 0;color:var(--muted);font-size:14px}.device-indicator{width:9px;height:9px;flex:none;border-radius:50%;background:#c97878;box-shadow:0 0 0 3px #c978781a}.device-indicator[data-online="true"]{background:#5b9b71;box-shadow:0 0 0 3px #5b9b711a}
+    .class-required{margin-top:22px;padding:20px;border:1px solid #dce5f4;border-radius:16px;background:#f7f9fd}.class-required p{margin:0 0 14px;color:var(--muted)}.class-setting{margin:0 0 20px}.class-setting label{margin-top:0}.class-select{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:600;letter-spacing:0}.class-select:disabled{cursor:not-allowed;opacity:.7}.class-setting-message{min-height:22px;margin:8px 0 0;color:var(--muted);font-size:13px}.class-setting-message[data-kind="error"]{color:#b42318}.class-setting-message[data-kind="success"]{color:#167647}
     .mac{margin:22px 0 20px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fafbfe}
     .schedule-date-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:22px 0 14px}.schedule-date-label{margin:0;font-size:14px;font-weight:650}.schedule-date-input{max-width:190px;padding:9px 11px;border:1px solid #cfd7e5;border-radius:10px;background:#fff;color:var(--ink);font:500 14px system-ui,-apple-system,"Segoe UI",sans-serif}
     .schedule-day{margin:0 0 12px;color:var(--muted);font-size:13px;font-weight:650}.lesson-list{display:grid;gap:8px;margin:0 0 18px;padding:0;list-style:none}.lesson-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;transition:background .2s,border-color .2s}.lesson-number{width:28px;height:28px;flex:none;border-radius:9px;background:#edf1f8;color:#526078;display:grid;place-items:center;font-size:12px;font-weight:700}.lesson-name{flex:1;font-weight:600}.lesson-result{color:var(--muted);font-size:12px}.lesson-row.lesson-detected{border-color:#c5e8d0;background:#f0fbf4}.lesson-row.lesson-detected .lesson-number{background:#d9f3e2;color:#167647}.lesson-row.lesson-detected .lesson-result{color:#167647}
@@ -56,6 +57,12 @@
           <div class="device-icon" aria-hidden="true">▦</div>
           <div><p class="device-name" id="deviceName">ScanBox</p><p class="device-state"><span id="deviceIndicator" class="device-indicator" data-online="false" aria-label="Устройство не в сети"></span><span id="deviceState">Устройство не добавлено</span></p></div>
         </div>
+        <div id="onlineSchedulePanel" hidden>
+        <div id="classRequired" class="class-required" hidden>
+          <p>Устройство в сети. Укажите класс, чтобы показать расписание.</p>
+          <button id="chooseClassButton" class="button button-secondary" type="button">Выбрать класс</button>
+        </div>
+        <div id="classSchedulePanel" hidden>
         <div class="schedule-date-row">
           <label class="schedule-date-label" for="scheduleDateInput">Расписание на дату</label>
           <input id="scheduleDateInput" class="schedule-date-input" type="date" aria-label="Выберите дату расписания">
@@ -77,6 +84,8 @@
         </div>
         <button id="scanButton" class="button button-primary scan-button" type="button">Сканировать</button>
         <p id="scanNotice" class="notice" role="status" aria-live="polite"></p>
+        </div>
+        </div>
       </section>
     </main>
     <main id="profileView" hidden>
@@ -117,6 +126,16 @@
           <p class="eyebrow">Содержимое устройства</p>
           <h2>Предметы и RFID-метки</h2>
           <p class="profile-copy">Здесь показаны предметы и привязанные к ним метки, сохранённые на устройстве.</p>
+          <div class="class-setting">
+            <label for="deviceClassSelect">Класс устройства</label>
+            <select id="deviceClassSelect" class="field class-select" disabled>
+              <option value="">Выберите класс</option>
+              <option value="8А">8А</option>
+              <option value="8Б">8Б</option>
+              <option value="8В">8В</option>
+            </select>
+            <p id="deviceClassMessage" class="class-setting-message" role="status" aria-live="polite">Подключите устройство, чтобы выбрать класс.</p>
+          </div>
           <p id="subjectStatus" class="subject-status" role="status" aria-live="polite">Ожидаем данные устройства…</p>
           <div id="addMappingPanel" class="mapping-form" hidden>
             <div class="mapping-form-actions">
@@ -162,6 +181,10 @@
       const profileView = document.getElementById('profileView');
       const deviceState = document.getElementById('deviceState');
       const deviceIndicator = document.getElementById('deviceIndicator');
+      const onlineSchedulePanel = document.getElementById('onlineSchedulePanel');
+      const classRequired = document.getElementById('classRequired');
+      const classSchedulePanel = document.getElementById('classSchedulePanel');
+      const chooseClassButton = document.getElementById('chooseClassButton');
       const scanNotice = document.getElementById('scanNotice');
       const scanButton = document.getElementById('scanButton');
       const scheduleDateInput = document.getElementById('scheduleDateInput');
@@ -192,6 +215,8 @@
       const profileSettingsPanel = document.getElementById('profileSettingsPanel');
       const subjectsPanel = document.getElementById('subjectsPanel');
       const subjectStatus = document.getElementById('subjectStatus');
+      const deviceClassSelect = document.getElementById('deviceClassSelect');
+      const deviceClassMessage = document.getElementById('deviceClassMessage');
       const subjectsList = document.getElementById('subjectsList');
       const addMappingPanel = document.getElementById('addMappingPanel');
       const scanTagButton = document.getElementById('scanTagButton');
@@ -204,6 +229,9 @@
       let pendingTagCandidate = null;
       let activeMappingSubjectId = 0;
       let wifiResetPending = false;
+      let deviceOnline = false;
+      let deviceClassName = '';
+      let deviceClassPending = false;
       let schoolSubjects = [];
       let tagMappings = new Map();
       let pendingMappingDeletes = new Map();
@@ -286,6 +314,67 @@
         deviceState.textContent = text;
         deviceIndicator.dataset.online = String(online);
         deviceIndicator.setAttribute('aria-label', online ? 'Устройство в сети' : 'Устройство не в сети');
+        if (deviceOnline !== online) {
+          deviceOnline = online;
+          updateDeviceClassVisibility();
+        }
+      }
+
+      function updateDeviceClassVisibility() {
+        onlineSchedulePanel.hidden = !deviceOnline;
+        classRequired.hidden = !deviceOnline || Boolean(deviceClassName);
+        classSchedulePanel.hidden = !deviceOnline || !deviceClassName;
+        deviceClassSelect.value = deviceClassName;
+        deviceClassSelect.disabled = !deviceOnline || deviceClassPending;
+        deviceClassMessage.dataset.kind = '';
+        if (!deviceOnline) {
+          deviceClassMessage.textContent = deviceClassName
+            ? 'Устройство не в сети. Подключитесь, чтобы изменить класс.'
+            : 'Подключите устройство, чтобы выбрать класс.';
+        } else if (!deviceClassName) {
+          deviceClassMessage.textContent = 'Выберите класс, чтобы загрузить его расписание.';
+        }
+      }
+
+      function requestDeviceClassChange() {
+        const className = deviceClassSelect.value;
+        if (className === deviceClassName) return;
+        if (!deviceOnline || !activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
+          updateDeviceClassVisibility();
+          deviceClassMessage.dataset.kind = 'error';
+          deviceClassMessage.textContent = 'Устройство не в сети. Класс не изменён.';
+          return;
+        }
+
+        deviceClassPending = true;
+        deviceClassSelect.disabled = true;
+        deviceClassMessage.dataset.kind = '';
+        deviceClassMessage.textContent = 'Сохраняем класс в памяти устройства…';
+        try {
+          activeSocket.send(JSON.stringify({ type: 'setClass', className }));
+        } catch {
+          deviceClassPending = false;
+          updateDeviceClassVisibility();
+          deviceClassMessage.dataset.kind = 'error';
+          deviceClassMessage.textContent = 'Не удалось отправить класс устройству.';
+        }
+      }
+
+      function handleDeviceClass(message) {
+        if (typeof message.className !== 'string') return;
+        deviceClassPending = false;
+        deviceClassName = message.className;
+        updateDeviceClassVisibility();
+        renderSelectedSchedule();
+        if (message.updated) {
+          deviceClassMessage.dataset.kind = 'success';
+          deviceClassMessage.textContent = deviceClassName
+            ? 'Класс сохранён в памяти устройства.'
+            : 'Класс удалён из настроек устройства.';
+        } else if (deviceClassName) {
+          deviceClassMessage.dataset.kind = '';
+          deviceClassMessage.textContent = 'Класс получен с устройства.';
+        }
       }
 
       function localDateKey(date = new Date()) {
@@ -312,6 +401,8 @@
         extraList.replaceChildren();
         lastScheduleScanTags = null;
 
+        if (!deviceOnline || !deviceClassName) return;
+
         if (!scheduleDateInput.value) {
           scheduleEmpty.textContent = 'Выберите дату расписания.';
           scheduleEmpty.hidden = false;
@@ -326,7 +417,7 @@
           day: 'numeric',
           month: 'long'
         });
-        scheduleDay.textContent = readableDate.charAt(0).toUpperCase() + readableDate.slice(1) + ' · 8В';
+        scheduleDay.textContent = readableDate.charAt(0).toUpperCase() + readableDate.slice(1) + ' · ' + deviceClassName;
 
         if (weekday === 0 || weekday === 6) {
           weekendNotice.hidden = false;
@@ -695,12 +786,29 @@
           try { message = JSON.parse(event.data); } catch { return; }
           if (message.type === 'deviceStatus') {
             setDeviceState(message.online ? 'Устройство в сети' : 'Устройство не в сети', message.online === true);
+            if (!message.online && deviceClassPending) {
+              deviceClassPending = false;
+              updateDeviceClassVisibility();
+              deviceClassMessage.dataset.kind = 'error';
+              deviceClassMessage.textContent = 'Устройство отключилось. Изменение класса не подтверждено.';
+            }
             if (!message.online && wifiResetPending) {
               wifiResetPending = false;
               resetWifiButton.disabled = false;
               wifiResetMessage.dataset.kind = 'success';
               wifiResetMessage.textContent = 'Устройство отключилось от Wi-Fi. Подключитесь к сети ScanBox-Setup и откройте http://192.168.4.1.';
             }
+          } else if (message.type === 'deviceClass') {
+            handleDeviceClass(message);
+          } else if (message.type === 'deviceClassQueued') {
+            deviceClassPending = true;
+            deviceClassSelect.disabled = true;
+            deviceClassMessage.textContent = 'Команда отправлена. Ждём подтверждения от устройства…';
+          } else if (message.type === 'deviceClassUpdateFailed') {
+            deviceClassPending = false;
+            updateDeviceClassVisibility();
+            deviceClassMessage.dataset.kind = 'error';
+            deviceClassMessage.textContent = message.message || 'Не удалось сохранить класс на устройстве.';
           } else if (message.type === 'subjects') {
             schoolSubjects = Array.isArray(message.subjects) ? message.subjects : [];
             renderSubjectMappings();
@@ -776,6 +884,12 @@
             scanNotice.dataset.kind = 'error';
             scanNotice.textContent = 'Устройство сейчас не подключено к API.';
           } else if (message.type === 'error') {
+            if (deviceClassPending) {
+              deviceClassPending = false;
+              updateDeviceClassVisibility();
+              deviceClassMessage.dataset.kind = 'error';
+              deviceClassMessage.textContent = message.message || 'Не удалось отправить класс устройству.';
+            }
             if (wifiResetPending) {
               wifiResetPending = false;
               resetWifiButton.disabled = false;
@@ -826,6 +940,11 @@
       document.getElementById('backButton').addEventListener('click', showHome);
       profileTab.addEventListener('click', () => setSettingsTab('profile'));
       subjectsTab.addEventListener('click', () => setSettingsTab('subjects'));
+      deviceClassSelect.addEventListener('change', requestDeviceClassChange);
+      chooseClassButton.addEventListener('click', () => {
+        showProfile();
+        setSettingsTab('subjects');
+      });
       cancelMappingButton.addEventListener('click', () => {
         addMappingPanel.hidden = true;
         activeMappingSubjectId = 0;
