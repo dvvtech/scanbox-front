@@ -23,6 +23,11 @@
     .device-row{display:flex;align-items:center;gap:14px}.device-icon{width:48px;height:48px;border-radius:16px;background:#eef3ff;display:grid;place-items:center;color:var(--blue);font-size:23px}
     .device-name{margin:0;font-weight:700}.device-state{margin:2px 0 0;color:var(--muted);font-size:14px}
     .mac{margin:22px 0 20px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fafbfe}
+    .schedule-date-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:22px 0 14px}.schedule-date-label{margin:0;font-size:14px;font-weight:650}.schedule-date-input{max-width:190px;padding:9px 11px;border:1px solid #cfd7e5;border-radius:10px;background:#fff;color:var(--ink);font:500 14px system-ui,-apple-system,"Segoe UI",sans-serif}
+    .schedule-day{margin:0 0 12px;color:var(--muted);font-size:13px;font-weight:650}.lesson-list{display:grid;gap:8px;margin:0 0 18px;padding:0;list-style:none}.lesson-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;transition:background .2s,border-color .2s}.lesson-number{width:28px;height:28px;flex:none;border-radius:9px;background:#edf1f8;color:#526078;display:grid;place-items:center;font-size:12px;font-weight:700}.lesson-name{flex:1;font-weight:600}.lesson-result{color:var(--muted);font-size:12px}.lesson-row.lesson-detected{border-color:#c5e8d0;background:#f0fbf4}.lesson-row.lesson-detected .lesson-number{background:#d9f3e2;color:#167647}.lesson-row.lesson-detected .lesson-result{color:#167647}
+    .weekend-notice{margin:14px 0 18px;padding:22px;border:1px dashed #cfd7e5;border-radius:16px;background:#fafbfe;text-align:center;color:var(--muted);font-weight:650}.weekend-notice svg{display:block;width:30px;height:30px;margin:0 auto 8px;fill:none;stroke:#8a94a6;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .scan-success{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:14px 16px;border:1px solid #b7e4c7;border-radius:14px;background:#f0fbf4;color:#176b40;font-weight:700}.success-icon{width:34px;height:34px;flex:none;border-radius:50%;background:#d7f3e1;display:grid;place-items:center}.success-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+    .extra-items{margin:18px 0;padding:15px;border:1px solid #f0d7a5;border-radius:14px;background:#fff9eb}.extra-title{margin:0 0 10px;color:#895c12;font-size:14px;font-weight:700}.extra-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}.extra-row{padding:10px 12px;border-radius:10px;background:#fff0cf;color:#704d13;font-size:13px}.schedule-empty{margin:0 0 18px;color:var(--muted);font-size:14px}
     .mac-label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}.mac-value{font:600 15px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.035em;overflow-wrap:anywhere}
     .scan-button{width:100%;min-height:54px;font-size:17px}.notice{min-height:24px;margin:14px 2px 0;color:var(--muted);font-size:14px}
     .notice[data-kind="error"]{color:#b42318}.notice[data-kind="success"]{color:#167647}.hint{margin:24px 4px 0;color:var(--muted);font-size:13px}
@@ -55,7 +60,26 @@
           <div><p class="device-name" id="deviceName">ScanBox</p><p class="device-state" id="deviceState">Устройство не добавлено</p></div>
         </div>
         <div class="mac"><span class="mac-label">MAC-адрес</span><span class="mac-value" id="macValue">Не указан</span></div>
-        <button id="scanButton" class="button button-primary scan-button" type="button">Сканировать</button>
+        <div class="schedule-date-row">
+          <label class="schedule-date-label" for="scheduleDateInput">Расписание на дату</label>
+          <input id="scheduleDateInput" class="schedule-date-input" type="date" aria-label="Выберите дату расписания">
+        </div>
+        <p id="scheduleDay" class="schedule-day"></p>
+        <ol id="lessonList" class="lesson-list" aria-label="Уроки на выбранную дату"></ol>
+        <p id="scheduleEmpty" class="schedule-empty" hidden>Уроки на эту дату не указаны.</p>
+        <div id="weekendNotice" class="weekend-notice" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18"></path><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="m9 16 2 2 4-4"></path></svg>
+          Выходной
+        </div>
+        <div id="extraItems" class="extra-items" hidden>
+          <p class="extra-title">Найдено не по расписанию</p>
+          <ul id="extraList" class="extra-list"></ul>
+        </div>
+        <div id="scanSuccess" class="scan-success" role="status" aria-live="polite" hidden>
+          <span class="success-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg></span>
+          <span>Все предметы на месте!</span>
+        </div>
+        <button id="scanButton" class="button button-primary scan-button" type="button">Сканировать 5 секунд</button>
         <p id="scanNotice" class="notice" role="status" aria-live="polite"></p>
       </section>
       <p class="hint">MAC и код сопряжения хранятся в профиле этого браузера.</p>
@@ -134,6 +158,15 @@
       const macValue = document.getElementById('macValue');
       const deviceState = document.getElementById('deviceState');
       const scanNotice = document.getElementById('scanNotice');
+      const scanButton = document.getElementById('scanButton');
+      const scheduleDateInput = document.getElementById('scheduleDateInput');
+      const scheduleDay = document.getElementById('scheduleDay');
+      const lessonList = document.getElementById('lessonList');
+      const scheduleEmpty = document.getElementById('scheduleEmpty');
+      const weekendNotice = document.getElementById('weekendNotice');
+      const extraItems = document.getElementById('extraItems');
+      const extraList = document.getElementById('extraList');
+      const scanSuccess = document.getElementById('scanSuccess');
       const macInput = document.getElementById('macInput');
       const tokenInput = document.getElementById('tokenInput');
       const profileMessage = document.getElementById('profileMessage');
@@ -169,6 +202,10 @@
       let activeSocket = null;
       let socketTarget = '';
       let reconnectTimer = null;
+      let classSchedule = null;
+      let currentLessons = [];
+      let scheduleScanRunning = false;
+      let lastScheduleScanTags = null;
 
       function normalizeMac(value) {
         const normalized = value.trim().replace(/-/g, ':').toUpperCase();
@@ -237,6 +274,185 @@
       }
 
       function setDeviceState(text) { deviceState.textContent = text; }
+
+      function localDateKey(date = new Date()) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return year + '-' + month + '-' + day;
+      }
+
+      function resetScheduleScanControls() {
+        scheduleScanRunning = false;
+        scheduleDateInput.disabled = false;
+        scanButton.disabled = false;
+        scanButton.textContent = 'Сканировать 5 секунд';
+      }
+
+      function renderSelectedSchedule() {
+        lessonList.replaceChildren();
+        currentLessons = [];
+        weekendNotice.hidden = true;
+        scheduleEmpty.hidden = true;
+        scanSuccess.hidden = true;
+        extraItems.hidden = true;
+        extraList.replaceChildren();
+        lastScheduleScanTags = null;
+
+        if (!scheduleDateInput.value) {
+          scheduleEmpty.textContent = 'Выберите дату расписания.';
+          scheduleEmpty.hidden = false;
+          return;
+        }
+
+        const [year, month, day] = scheduleDateInput.value.split('-').map(Number);
+        const selectedDate = new Date(year, month - 1, day);
+        const weekday = selectedDate.getDay();
+        const readableDate = selectedDate.toLocaleDateString('ru-RU', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long'
+        });
+        scheduleDay.textContent = readableDate.charAt(0).toUpperCase() + readableDate.slice(1) + ' · 7В';
+
+        if (weekday === 0 || weekday === 6) {
+          weekendNotice.hidden = false;
+          return;
+        }
+
+        if (!classSchedule) {
+          scheduleEmpty.textContent = 'Загружаем расписание класса…';
+          scheduleEmpty.hidden = false;
+          return;
+        }
+
+        const daySchedule = classSchedule.days?.find(item => Number(item.dayOfWeek) === weekday);
+        currentLessons = daySchedule?.lessons || [];
+        if (currentLessons.length === 0) {
+          scheduleEmpty.textContent = 'Уроки на эту дату не указаны.';
+          scheduleEmpty.hidden = false;
+          return;
+        }
+
+        for (const lesson of currentLessons) {
+          const row = document.createElement('li');
+          row.className = 'lesson-row';
+          row.dataset.subjectId = String(lesson.subjectId);
+
+          const number = document.createElement('span');
+          number.className = 'lesson-number';
+          number.textContent = String(lesson.lessonNumber);
+
+          const name = document.createElement('span');
+          name.className = 'lesson-name';
+          const subject = schoolSubjects.find(item => Number(item.id) === Number(lesson.subjectId));
+          name.textContent = subject?.name || 'Предмет ' + lesson.subjectId;
+
+          const result = document.createElement('span');
+          result.className = 'lesson-result';
+          result.textContent = 'Ожидает сканирования';
+
+          row.append(number, name, result);
+          lessonList.append(row);
+        }
+      }
+
+      function renderScheduleScanResults(tags) {
+        const expectedSubjectIds = new Set(currentLessons.map(lesson => Number(lesson.subjectId)));
+        const tagToSubjectId = new Map();
+        for (const [subjectId, mapping] of tagMappings) {
+          tagToSubjectId.set(String(mapping.rfidTag).replace(/\s/g, '').toUpperCase(), Number(subjectId));
+        }
+
+        const detectedSubjectIds = new Set();
+        const extraTags = [];
+        for (const tag of tags) {
+          const subjectId = tagToSubjectId.get(tag);
+          if (subjectId && expectedSubjectIds.has(subjectId)) {
+            detectedSubjectIds.add(subjectId);
+          } else {
+            extraTags.push({ tag, subjectId: subjectId || null });
+          }
+        }
+
+        for (const row of lessonList.querySelectorAll('.lesson-row')) {
+          const detected = detectedSubjectIds.has(Number(row.dataset.subjectId));
+          row.classList.toggle('lesson-detected', detected);
+          row.querySelector('.lesson-result').textContent = detected ? 'Найдено' : 'Не найдено';
+        }
+
+        extraList.replaceChildren();
+        for (const item of extraTags) {
+          const row = document.createElement('li');
+          row.className = 'extra-row';
+          if (item.subjectId) {
+            const subject = schoolSubjects.find(entry => Number(entry.id) === item.subjectId);
+            row.textContent = (subject?.name || 'Предмет ' + item.subjectId) + ' — не входит в расписание';
+          } else {
+            row.textContent = 'Неизвестная метка · ' + formatRfidTag(item.tag);
+          }
+          extraList.append(row);
+        }
+        extraItems.hidden = extraTags.length === 0;
+
+        const allFound = expectedSubjectIds.size > 0
+          && [...expectedSubjectIds].every(subjectId => detectedSubjectIds.has(subjectId));
+        scanSuccess.hidden = !allFound;
+        if (allFound) {
+          scanNotice.dataset.kind = 'success';
+          scanNotice.textContent = '';
+        } else if (expectedSubjectIds.size === 0) {
+          scanNotice.dataset.kind = '';
+          scanNotice.textContent = 'Сканирование завершено. Найдено меток: ' + tags.length + '.';
+        } else {
+          scanNotice.dataset.kind = '';
+          scanNotice.textContent = 'Найдено предметов: ' + detectedSubjectIds.size + ' из ' + expectedSubjectIds.size + '.';
+        }
+      }
+
+      function applyScheduleScanResult(message) {
+        resetScheduleScanControls();
+        if (!message.success || !Array.isArray(message.tags)) {
+          scanNotice.dataset.kind = 'error';
+          scanNotice.textContent = message.message || 'Не удалось завершить сканирование.';
+          return;
+        }
+        lastScheduleScanTags = new Set(message.tags
+          .filter(tag => typeof tag === 'string')
+          .map(tag => tag.replace(/\s/g, '').toUpperCase()));
+        renderScheduleScanResults(lastScheduleScanTags);
+      }
+
+      function startScheduleScan() {
+        scanNotice.dataset.kind = '';
+        if (!getMac() || !getToken()) {
+          scanNotice.dataset.kind = 'error';
+          scanNotice.textContent = 'Сначала добавьте MAC и код сопряжения в настройках.';
+          showProfile();
+          return;
+        }
+        if (!activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
+          scanNotice.dataset.kind = 'error';
+          scanNotice.textContent = 'Нет соединения с API или устройством.';
+          connectWebSocket();
+          return;
+        }
+
+        scheduleScanRunning = true;
+        scanButton.disabled = true;
+        scanButton.textContent = 'Сканирование…';
+        scheduleDateInput.disabled = true;
+        scanSuccess.hidden = true;
+        extraItems.hidden = true;
+        scanNotice.textContent = 'Сканирование началось. Подождите 5 секунд…';
+        try {
+          activeSocket.send(JSON.stringify({ type: 'scanSchedule' }));
+        } catch {
+          resetScheduleScanControls();
+          scanNotice.dataset.kind = 'error';
+          scanNotice.textContent = 'Не удалось отправить команду сканирования.';
+        }
+      }
 
       function renderSubjectMappings() {
         subjectsList.replaceChildren();
@@ -469,7 +685,15 @@
           } else if (message.type === 'subjects') {
             schoolSubjects = Array.isArray(message.subjects) ? message.subjects : [];
             renderSubjectMappings();
+            renderSelectedSchedule();
             subjectStatus.textContent = schoolSubjects.length ? 'Предметы загружены. Ожидаем привязки с устройства…' : 'Список предметов пуст.';
+          } else if (message.type === 'classSchedule') {
+            classSchedule = message.schedule || null;
+            renderSelectedSchedule();
+          } else if (message.type === 'scheduleScanQueued') {
+            scanNotice.textContent = 'Устройство сканирует RFID-метки 5 секунд…';
+          } else if (message.type === 'scheduleScanResult') {
+            applyScheduleScanResult(message);
           } else if (message.type === 'tagMappings') {
             applyTagMappings(message);
           } else if (message.type === 'tagScanQueued') {
@@ -501,6 +725,7 @@
             scanNotice.dataset.kind = 'success';
             scanNotice.textContent = 'Устройство получило запрос. Пока прошивка только записывает его в лог.';
           } else if (message.type === 'deviceOffline') {
+            if (scheduleScanRunning) resetScheduleScanControls();
             if (pendingTagScanSubjectId) tagScanMessage.textContent = 'Устройство не в сети. Попробуйте позже.';
             pendingTagScanSubjectId = 0;
             scanTagButton.disabled = false;
@@ -509,6 +734,7 @@
             scanNotice.dataset.kind = 'error';
             scanNotice.textContent = 'Устройство сейчас не подключено к API.';
           } else if (message.type === 'error') {
+            if (scheduleScanRunning) resetScheduleScanControls();
             confirmTagButton.disabled = false;
             if (pendingTagScanSubjectId) tagScanMessage.textContent = message.message || 'Ошибка сканирования.';
             pendingTagScanSubjectId = 0;
@@ -609,27 +835,11 @@
         setEditMode(true);
         closeSocket();
       });
-      document.getElementById('scanButton').addEventListener('click', () => {
-        const mac = getMac();
-        const token = getToken();
-        scanNotice.dataset.kind = '';
-        if (!mac || !token) {
-          scanNotice.dataset.kind = 'error';
-          scanNotice.textContent = 'Сначала добавьте MAC и код сопряжения в профиле.';
-          showProfile();
-          return;
-        }
-        if (!activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
-          scanNotice.dataset.kind = 'error';
-          scanNotice.textContent = 'Нет соединения с API. Подключаемся, попробуйте ещё раз через несколько секунд.';
-          connectWebSocket();
-          return;
-        }
-        const requestId = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(16).slice(2));
-        activeSocket.send(JSON.stringify({ type: 'scan', requestId }));
-        scanNotice.textContent = 'Команда отправлена API…';
-      });
+      scanButton.addEventListener('click', startScheduleScan);
+      scheduleDateInput.addEventListener('change', renderSelectedSchedule);
 
+      scheduleDateInput.value = localDateKey();
+      renderSelectedSchedule();
       render();
       connectWebSocket();
     })();
