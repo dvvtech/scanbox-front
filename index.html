@@ -148,7 +148,6 @@
       const API_WS_URL = 'wss://api.scanbox.tech/ws';
       const homeView = document.getElementById('homeView');
       const profileView = document.getElementById('profileView');
-      const macValue = document.getElementById('macValue');
       const deviceState = document.getElementById('deviceState');
       const scanNotice = document.getElementById('scanNotice');
       const scanButton = document.getElementById('scanButton');
@@ -236,7 +235,6 @@
       function render() {
         const mac = getMac();
         const token = getToken();
-        macValue.textContent = mac || 'Не указан';
         macInput.value = mac || '';
         tokenInput.value = token || '';
         if (!mac) deviceState.textContent = 'MAC-адрес не добавлен';
