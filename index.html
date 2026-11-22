@@ -22,6 +22,7 @@
     .card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 18px 50px #2635520b}
     .device-row{display:flex;align-items:center;gap:14px}.device-icon{width:48px;height:48px;border-radius:16px;background:#eef3ff;display:grid;place-items:center;color:var(--blue);font-size:23px}
     .device-name{margin:0;font-weight:700}.device-state{display:flex;align-items:center;gap:8px;margin:2px 0 0;color:var(--muted);font-size:14px}.device-indicator{width:9px;height:9px;flex:none;border-radius:50%;background:#c97878;box-shadow:0 0 0 3px #c978781a}.device-indicator[data-online="true"]{background:#5b9b71;box-shadow:0 0 0 3px #5b9b711a}
+    .save-toast{display:flex;align-items:center;gap:10px;margin:0 0 16px;padding:12px 16px;border:1px solid #b7e4c7;border-radius:14px;background:#f0fbf4;color:#176b40;font-size:14px;font-weight:650}.save-toast span{width:22px;height:22px;flex:none;border-radius:50%;background:#d7f3e1;display:grid;place-items:center;font-size:14px}
     .class-required{margin-top:22px;padding:20px;border:1px solid #dce5f4;border-radius:16px;background:#f7f9fd}.class-required p{margin:0 0 14px;color:var(--muted)}.class-setting{margin:0 0 20px}.class-setting label{margin-top:0}.class-select{appearance:none;-webkit-appearance:none;padding-right:44px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:600;letter-spacing:0}.class-select:disabled{cursor:not-allowed;opacity:.7}.class-setting-message{min-height:22px;margin:8px 0 0;color:var(--muted);font-size:13px}.class-setting-message[data-kind="error"]{color:#b42318}.class-setting-message[data-kind="success"]{color:#167647}
     .mac{margin:22px 0 20px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fafbfe}
     .schedule-date-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:22px 0 14px}.schedule-date-label{margin:0;font-size:14px;font-weight:650}.schedule-date-input{max-width:190px;padding:9px 11px;border:1px solid #cfd7e5;border-radius:10px;background:#fff;color:var(--ink);font:500 14px system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -53,6 +54,7 @@
       <button id="profileButton" class="button button-secondary settings-button" type="button" aria-label="Открыть настройки"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 1.72l-.13.9a2 2 0 0 1-1 1.4l-.87.5a2 2 0 0 1-1.73.15l-.83-.33a2 2 0 0 0-2.5.91l-.22.38a2 2 0 0 0 .5 2.58l.7.56a2 2 0 0 1 .73 1.73v1a2 2 0 0 1-.73 1.73l-.7.56a2 2 0 0 0-.5 2.58l.22.38a2 2 0 0 0 2.5.91l.83-.33a2 2 0 0 1 1.73.15l.87.5a2 2 0 0 1 1 1.4l.13.9a2 2 0 0 0 2 1.72h.44a2 2 0 0 0 2-1.72l.13-.9a2 2 0 0 1 1-1.4l.87-.5a2 2 0 0 1 1.73-.15l.83.33a2 2 0 0 0 2.5-.91l.22-.38a2 2 0 0 0-.5-2.58l-.7-.56a2 2 0 0 1-.73-1.73v-1a2 2 0 0 1 .73-1.73l.7-.56a2 2 0 0 0 .5-2.58l-.22-.38a2 2 0 0 0-2.5-.91l-.83.33a2 2 0 0 1-1.73-.15l-.87-.5a2 2 0 0 1-1-1.4l-.13-.9A2 2 0 0 0 12.22 2Z"></path><circle cx="12" cy="12" r="3"></circle></svg><span>Настройка</span></button>
     </header>
     <main id="homeView">
+      <p id="profileSaveToast" class="save-toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span>Настройки устройства сохранены.</p>
       <section class="card" aria-labelledby="deviceName">
         <div class="device-row">
           <div class="device-icon" aria-hidden="true">▦</div>
@@ -182,6 +184,7 @@
       const profileView = document.getElementById('profileView');
       const deviceState = document.getElementById('deviceState');
       const deviceIndicator = document.getElementById('deviceIndicator');
+      const profileSaveToast = document.getElementById('profileSaveToast');
       const onlineSchedulePanel = document.getElementById('onlineSchedulePanel');
       const classRequired = document.getElementById('classRequired');
       const classSchedulePanel = document.getElementById('classSchedulePanel');
@@ -241,6 +244,7 @@
       let activeSocket = null;
       let socketTarget = '';
       let reconnectTimer = null;
+      let profileSaveToastTimer = null;
       let classSchedule = null;
       let currentLessons = [];
       let scheduleScanRunning = false;
@@ -290,6 +294,19 @@
       }
 
       function showHome() { profileView.hidden = true; homeView.hidden = false; }
+      function showProfileSaveToast() {
+        profileSaveToast.hidden = false;
+        clearTimeout(profileSaveToastTimer);
+        profileSaveToastTimer = setTimeout(() => {
+          profileSaveToast.hidden = true;
+          profileSaveToastTimer = null;
+        }, 4000);
+      }
+      function hideProfileSaveToast() {
+        clearTimeout(profileSaveToastTimer);
+        profileSaveToastTimer = null;
+        profileSaveToast.hidden = true;
+      }
       function setEditMode(enabled) {
         editingProfile = enabled;
         macInput.readOnly = !enabled;
@@ -302,6 +319,7 @@
       }
 
       function showProfile() {
+        hideProfileSaveToast();
         setSettingsTab('profile');
         render();
         profileMessage.textContent = '';
@@ -984,11 +1002,10 @@
         }
         localStorage.setItem(MAC_KEY, normalizedMac);
         localStorage.setItem(TOKEN_KEY, normalizedToken);
-        scanNotice.dataset.kind = 'success';
-        scanNotice.textContent = 'Настройки устройства сохранены.';
         render();
         setEditMode(false);
         showHome();
+        showProfileSaveToast();
         connectWebSocket();
       });
       removeMacButton.addEventListener('click', () => deleteConfirmDialog.showModal());
