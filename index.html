@@ -31,7 +31,7 @@
     .scan-success{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:14px 16px;border:1px solid #b7e4c7;border-radius:14px;background:#f0fbf4;color:#176b40;font-weight:700}.success-icon{width:34px;height:34px;flex:none;border-radius:50%;background:#d7f3e1;display:grid;place-items:center}.success-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
     .extra-items{margin:18px 0;padding:15px;border:1px solid #f0d7a5;border-radius:14px;background:#fff9eb}.extra-title{margin:0 0 10px;color:#895c12;font-size:14px;font-weight:700}.extra-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}.extra-row{padding:10px 12px;border-radius:10px;background:#fff0cf;color:#704d13;font-size:13px}.schedule-empty{margin:0 0 18px;color:var(--muted);font-size:14px}
     .mac-label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}.mac-value{font:600 15px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.035em;overflow-wrap:anywhere}
-    .scan-button{width:100%;min-height:54px;font-size:17px}.notice{min-height:24px;margin:14px 2px 0;color:var(--muted);font-size:14px}
+    .scan-button{width:100%;min-height:54px;font-size:17px;display:flex;align-items:center;justify-content:center;gap:10px}.button-spinner{width:17px;height:17px;flex:none;border:2px solid #ffffff75;border-top-color:#fff;border-radius:50%;animation:scan-spin .7s linear infinite}@keyframes scan-spin{to{transform:rotate(360deg)}}.notice{min-height:24px;margin:14px 2px 0;color:var(--muted);font-size:14px}
     .notice[data-kind="error"]{color:#b42318}.notice[data-kind="success"]{color:#167647}.hint{margin:24px 4px 0;color:var(--muted);font-size:13px}
     .profile-card{max-width:560px}.profile-top{display:flex;align-items:center;gap:8px;margin-bottom:20px}
     .settings-tabs{display:flex;gap:6px;padding:5px;margin:0 0 24px;border-radius:14px;background:#f1f4f9}.settings-tab{flex:1;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-weight:650}.settings-tab[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 2px 8px #17203312}
@@ -407,6 +407,7 @@
         scheduleScanRunning = false;
         scheduleDateInput.disabled = false;
         scanButton.disabled = false;
+        scanButton.removeAttribute('aria-busy');
         scanButton.textContent = 'Сканировать';
       }
 
@@ -563,10 +564,17 @@
 
         scheduleScanRunning = true;
         scanButton.disabled = true;
-        scanButton.textContent = 'Сканирование…';
+        scanButton.setAttribute('aria-busy', 'true');
+        scanButton.innerHTML = '<span class="button-spinner" aria-hidden="true"></span>Сканирование…';
         scheduleDateInput.disabled = true;
         scanSuccess.hidden = true;
         extraItems.hidden = true;
+        extraList.replaceChildren();
+        lastScheduleScanTags = null;
+        for (const row of lessonList.querySelectorAll('.lesson-row')) {
+          row.classList.remove('lesson-detected');
+          row.querySelector('.lesson-result').textContent = 'Ожидает сканирования';
+        }
         scanNotice.textContent = 'Сканирование началось. Подождите 5 секунд…';
         try {
           activeSocket.send(JSON.stringify({ type: 'scanSchedule' }));
