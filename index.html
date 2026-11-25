@@ -44,7 +44,7 @@
     .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}.field[readonly]{background:#f5f7fb;cursor:default}.field-label-row{display:flex;align-items:center;justify-content:space-between;margin-top:20px}.field-label-row label{margin:0 0 8px}.icon-button{width:36px;height:36px;margin:0 0 8px;padding:8px;border:0;border-radius:9px;background:#edf1f8;color:#44536b;display:grid;place-items:center}.icon-button:hover{background:#e1e8f4}.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
     .profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.profile-message{min-height:22px;margin:12px 0 0;color:#b42318;font-size:14px}.profile-message[data-kind="success"]{color:#167647}
     .confirm-dialog{width:min(100% - 32px,420px);padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);box-shadow:0 24px 80px #17203333}
-    .confirm-dialog::backdrop{background:#17203366;backdrop-filter:blur(3px)}.confirm-icon{width:46px;height:46px;margin-bottom:18px;border-radius:15px;background:#fff0ef;color:#b42318;display:grid;place-items:center}.confirm-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.confirm-dialog h2{margin:0;font-size:22px;line-height:1.25;letter-spacing:-.03em}.confirm-dialog p{margin:10px 0 24px;color:var(--muted);font-size:15px}.confirm-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}.button-danger{background:#c4322b;color:#fff}.button-danger:hover{background:#a92722}
+    .confirm-dialog::backdrop{background:#17203366;backdrop-filter:blur(3px)}.confirm-icon{width:46px;height:46px;margin-bottom:18px;border-radius:15px;background:#fff0ef;color:#b42318;display:grid;place-items:center}.confirm-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.confirm-dialog h2{margin:0;font-size:22px;line-height:1.25;letter-spacing:-.03em}.confirm-dialog p{margin:10px 0 24px;color:var(--muted);font-size:15px}.confirm-dialog code{font:600 13px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--ink);background:#f1f4f9;padding:2px 6px;border-radius:6px;overflow-wrap:anywhere}.confirm-dialog strong{color:var(--ink);font-weight:650}.confirm-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}.button-danger{background:#c4322b;color:#fff}.button-danger:hover{background:#a92722}
     [hidden]{display:none!important}@media(max-width:520px){main{padding-top:24px}.card{padding:20px;border-radius:20px}header{height:68px}.button{padding:11px 15px}}
   </style>
 </head>
@@ -185,6 +185,15 @@
       <button id="confirmWifiResetButton" class="button button-danger" type="button">Сбросить Wi-Fi</button>
     </div>
   </dialog>
+  <dialog id="tagUnbindDialog" class="confirm-dialog" aria-labelledby="tagUnbindDialogTitle" aria-describedby="tagUnbindDialogDescription">
+    <div class="confirm-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.6 13.4 12 22l-9-9V4h9l8.6 8.6a2 2 0 0 1 0 2.8Z"></path><circle cx="7.5" cy="7.5" r="1.5"></circle><path d="m9.5 13.5 5-5M9.5 8.5l5 5"></path></svg></div>
+    <h2 id="tagUnbindDialogTitle">Отвязать метку?</h2>
+    <p id="tagUnbindDialogDescription">Метка <code id="tagUnbindTagValue"></code> будет удалена из памяти устройства. Привязка к предмету <strong id="tagUnbindSubjectName"></strong> будет снята, предмет останется в списке — метку можно будет привязать заново.</p>
+    <div class="confirm-actions">
+      <button id="cancelTagUnbindButton" class="button button-secondary" type="button">Отмена</button>
+      <button id="confirmTagUnbindButton" class="button button-danger" type="button">Да, отвязать</button>
+    </div>
+  </dialog>
   <script>
     (() => {
       const MAC_KEY = 'scanbox.deviceMac';
@@ -225,6 +234,11 @@
       const deleteConfirmDialog = document.getElementById('deleteConfirmDialog');
       const cancelDeleteButton = document.getElementById('cancelDeleteButton');
       const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+      const tagUnbindDialog = document.getElementById('tagUnbindDialog');
+      const tagUnbindTagValue = document.getElementById('tagUnbindTagValue');
+      const tagUnbindSubjectName = document.getElementById('tagUnbindSubjectName');
+      const cancelTagUnbindButton = document.getElementById('cancelTagUnbindButton');
+      const confirmTagUnbindButton = document.getElementById('confirmTagUnbindButton');
       const profileTab = document.getElementById('profileTab');
       const subjectsTab = document.getElementById('subjectsTab');
       const profileSettingsPanel = document.getElementById('profileSettingsPanel');
@@ -245,6 +259,7 @@
       let pendingTagScanSubjectId = 0;
       let pendingTagCandidate = null;
       let activeMappingSubjectId = 0;
+      let pendingUnbindSubjectId = 0;
       let wifiResetPending = false;
       let deviceOnline = false;
       let deviceClassName = '';
@@ -624,7 +639,7 @@
           if (pending || mapping) {
             const tag = document.createElement('p');
             tag.className = 'subject-tag';
-            tag.textContent = pending ? 'Удаление метки…' : formatRfidTag(mapping.rfidTag);
+            tag.textContent = pending ? 'Отвязка метки…' : formatRfidTag(mapping.rfidTag);
             details.append(tag);
           }
           row.append(details);
@@ -634,9 +649,9 @@
             removeButton.type = 'button';
             removeButton.className = 'subject-delete';
             removeButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="m19 6-1 14H6L5 6"></path><path d="M10 11v5M14 11v5"></path></svg><span>Отвязать</span>';
-            removeButton.title = 'Удалить метку';
-            removeButton.setAttribute('aria-label', 'Удалить RFID-метку для предмета ' + subject.name);
-            removeButton.addEventListener('click', () => requestMappingDelete(subjectId));
+            removeButton.title = 'Отвязать метку';
+            removeButton.setAttribute('aria-label', 'Отвязать RFID-метку от предмета ' + subject.name);
+            removeButton.addEventListener('click', () => openTagUnbindDialog(subjectId));
             row.append(removeButton);
           } else if (!pending) {
             const bindButton = document.createElement('button');
@@ -749,12 +764,22 @@
         subjectStatus.textContent = '';
       }
 
+      function openTagUnbindDialog(subjectId) {
+        const mapping = tagMappings.get(subjectId);
+        if (!mapping) return;
+        const subject = schoolSubjects.find(item => Number(item.id) === subjectId);
+        pendingUnbindSubjectId = subjectId;
+        tagUnbindTagValue.textContent = formatRfidTag(mapping.rfidTag);
+        tagUnbindSubjectName.textContent = subject ? subject.name : '—';
+        tagUnbindDialog.showModal();
+      }
+
       function requestMappingDelete(subjectId) {
         const mapping = tagMappings.get(subjectId);
         if (!mapping) return;
         if (!activeSocket || activeSocket.readyState !== WebSocket.OPEN) {
           subjectStatus.dataset.kind = 'error';
-          subjectStatus.textContent = 'Нет связи с устройством. Удаление не отправлено.';
+          subjectStatus.textContent = 'Нет связи с устройством. Отвязка не отправлена.';
           return;
         }
 
@@ -781,11 +806,11 @@
         if (message.success) {
           tagMappings.delete(subjectId);
           subjectStatus.dataset.kind = 'success';
-          subjectStatus.textContent = 'Привязка удалена из памяти устройства.';
+          subjectStatus.textContent = 'Метка отвязана от предмета.';
         } else {
           if (previous) tagMappings.set(subjectId, previous);
           subjectStatus.dataset.kind = 'error';
-          subjectStatus.textContent = message.message || 'Устройство не удалило привязку.';
+          subjectStatus.textContent = message.message || 'Устройство не отвязало метку.';
         }
         renderSubjectMappings();
       }
@@ -922,7 +947,7 @@
             wifiResetMessage.textContent = message.message || 'Не удалось сбросить настройки Wi-Fi.';
           } else if (message.type === 'tagMappingDeleteQueued') {
             subjectStatus.dataset.kind = '';
-            subjectStatus.textContent = 'Команда удаления передана устройству…';
+            subjectStatus.textContent = 'Команда отвязки передана устройству…';
           } else if (message.type === 'tagMappingDeleted') {
             handleTagMappingDeleted(message);
           } else if (message.type === 'scanQueued') {
@@ -1108,6 +1133,13 @@
         editSnapshot = { mac: '', token: '' };
         setEditMode(true);
         closeSocket();
+      });
+      cancelTagUnbindButton.addEventListener('click', () => tagUnbindDialog.close());
+      tagUnbindDialog.addEventListener('close', () => { pendingUnbindSubjectId = 0; });
+      confirmTagUnbindButton.addEventListener('click', () => {
+        const subjectId = pendingUnbindSubjectId;
+        tagUnbindDialog.close();
+        if (subjectId) requestMappingDelete(subjectId);
       });
       scanButton.addEventListener('click', startScheduleScan);
       scheduleDateInput.addEventListener('change', renderSelectedSchedule);
