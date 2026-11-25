@@ -16,14 +16,14 @@
     .button{border:0;border-radius:12px;padding:12px 18px;font-weight:650;transition:transform .15s,background .15s}.button:active{transform:scale(.98)}
     .button-primary{background:var(--blue);color:#fff;box-shadow:0 8px 20px #2864e82b}.button-primary:hover{background:#1d53ca}.button:disabled{cursor:wait;opacity:.72}.button:disabled:active{transform:none}
     .button-secondary{background:#edf1f8;color:#26334a}.settings-button{display:inline-flex;align-items:center;gap:8px}.settings-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}.button-quiet{background:transparent;color:var(--muted);padding:10px 12px}
-    main{padding:64px 0 48px}.eyebrow{margin:0 0 12px;color:var(--blue);font-size:13px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
+    main{padding:64px 0 48px}.eyebrow{margin:0 0 20px;color:var(--blue);font-size:13px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
     h1{margin:0;font-size:clamp(34px,7vw,52px);line-height:1.08;letter-spacing:-.055em}
     .intro{max-width:520px;margin:16px 0 34px;color:var(--muted);font-size:17px}
     .card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 18px 50px #2635520b}
     .device-row{display:flex;align-items:center;gap:14px}.device-icon{width:48px;height:48px;border-radius:16px;background:#eef3ff;display:grid;place-items:center;color:var(--blue);font-size:23px}
     .device-name{margin:0;font-weight:700}.device-state{display:flex;align-items:center;gap:8px;margin:2px 0 0;color:var(--muted);font-size:14px}.device-indicator{width:9px;height:9px;flex:none;border-radius:50%;background:#c97878;box-shadow:0 0 0 3px #c978781a}.device-indicator[data-online="true"]{background:#5b9b71;box-shadow:0 0 0 3px #5b9b711a}
     .save-toast{display:flex;align-items:center;gap:10px;margin:0 0 16px;padding:12px 16px;border:1px solid #b7e4c7;border-radius:14px;background:#f0fbf4;color:#176b40;font-size:14px;font-weight:650}.save-toast span{width:22px;height:22px;flex:none;border-radius:50%;background:#d7f3e1;display:grid;place-items:center;font-size:14px}
-    .class-required{margin-top:22px;padding:20px;border:1px solid #dce5f4;border-radius:16px;background:#f7f9fd}.class-required p{margin:0 0 14px;color:var(--muted)}.class-setting{margin:0 0 20px}.class-setting label{margin-top:0;margin-bottom:10px;display:block}.class-select{appearance:none;-webkit-appearance:none;padding-right:44px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:600;letter-spacing:0}.class-select:disabled{cursor:not-allowed;opacity:.7}.class-setting-message{min-height:22px;margin:8px 0 0;color:var(--muted);font-size:13px}.class-setting-message[data-kind="error"]{color:#b42318}.class-setting-message[data-kind="success"]{color:#167647}
+    .class-required{margin-top:22px;padding:20px;border:1px solid #dce5f4;border-radius:16px;background:#f7f9fd}.class-required p{margin:0 0 14px;color:var(--muted)}.class-setting{margin:0 0 20px}.class-setting label{margin-top:0;margin-bottom:8px;display:block}.class-select{appearance:none;-webkit-appearance:none;padding-right:44px}.class-select:disabled{cursor:not-allowed;opacity:.7}.class-setting-message{min-height:22px;margin:8px 0 0;color:var(--muted);font-size:13px}.class-setting-message[data-kind="error"]{color:#b42318}.class-setting-message[data-kind="success"]{color:#167647}
     .mac{margin:22px 0 20px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fafbfe}
     .schedule-date-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:22px 0 14px}.schedule-date-label{margin:0;font-size:14px;font-weight:650}.schedule-date-input{max-width:190px;padding:9px 11px;border:1px solid #cfd7e5;border-radius:10px;background:#fff;color:var(--ink);font:500 14px system-ui,-apple-system,"Segoe UI",sans-serif}
     .schedule-day{margin:0 0 12px;color:var(--muted);font-size:13px;font-weight:650}.lesson-list{display:grid;gap:8px;margin:0 0 18px;padding:0;list-style:none}.lesson-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;transition:background .2s,border-color .2s}.lesson-number{width:28px;height:28px;flex:none;border-radius:9px;background:#edf1f8;color:#526078;display:grid;place-items:center;font-size:12px;font-weight:700}.lesson-name{flex:1;font-weight:600}.lesson-result{color:var(--muted);font-size:12px}.lesson-row.lesson-detected{border-color:#c5e8d0;background:#f0fbf4}.lesson-row.lesson-detected .lesson-number{background:#d9f3e2;color:#167647}.lesson-row.lesson-detected .lesson-result{color:#167647}
@@ -33,13 +33,13 @@
     .mac-label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}.mac-value{font:600 15px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.035em;overflow-wrap:anywhere}
     .scan-button{width:100%;min-height:54px;font-size:17px;display:flex;align-items:center;justify-content:center;gap:10px}.button-spinner{width:17px;height:17px;flex:none;border:2px solid #ffffff75;border-top-color:#fff;border-radius:50%;animation:scan-spin .7s linear infinite}@keyframes scan-spin{to{transform:rotate(360deg)}}.notice{min-height:24px;margin:14px 2px 0;color:var(--muted);font-size:14px}
     .notice[data-kind="error"]{color:#b42318}.notice[data-kind="success"]{color:#167647}.hint{margin:24px 4px 0;color:var(--muted);font-size:13px}
-    .profile-card{max-width:560px}.profile-top{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+    .profile-card{max-width:560px;margin-inline:auto}.profile-top{display:flex;align-items:center;gap:8px;margin-bottom:20px}
     .settings-tabs{display:flex;gap:6px;padding:5px;margin:0 0 24px;border-radius:14px;background:#f1f4f9}.settings-tab{flex:1;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-weight:650}.settings-tab[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 2px 8px #17203312}
-    .mapping-form{margin-top:12px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#fafbfe}.mapping-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.tag-scan-message{min-height:22px;margin:12px 0 0;color:var(--muted);font-size:14px}.tag-scan-message[data-kind="error"]{color:#b42318}.tag-scan-candidate{margin-top:16px;padding:14px;border:1px solid #b7e4c7;border-radius:12px;background:#f0fbf4}.tag-scan-candidate strong{display:block;margin-bottom:8px}.tag-scan-candidate code{font:600 14px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
-    .subject-list{display:grid;gap:10px}.subject-entry{display:grid;gap:0}.subject-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff}.subject-name{margin:0;font-weight:650}.subject-tag{margin:3px 0 0;color:var(--muted);font:13px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.subject-bind{flex:none;padding:9px 12px;border:0;border-radius:10px;background:#edf3ff;color:var(--blue);font-size:13px;font-weight:650;white-space:nowrap}.subject-bind:hover{background:#e0eaff}.subject-delete{flex:none;width:38px;height:38px;padding:9px;border:0;border-radius:10px;background:#fff0ef;color:#b42318;display:grid;place-items:center}.subject-delete:hover{background:#ffe2df}.subject-delete svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.subject-status{min-height:22px;margin:0 0 14px;color:var(--muted);font-size:14px}.subject-status[data-kind="error"]{color:#b42318}.subject-status[data-kind="success"]{color:#167647}#subjectsPanel h2{margin:0 0 3px}
+    .mapping-form{margin-top:8px;padding:16px 16px 16px 20px;border:1px solid #d7e2f7;border-left:3px solid var(--blue);border-radius:14px;background:#f7f9ff}.mapping-title{margin:0 0 4px;font-size:15px;font-weight:700}.mapping-hint{margin:0;color:var(--muted);font-size:14px}.mapping-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.tag-scan-message{min-height:22px;margin:12px 0 0;color:var(--muted);font-size:14px}.tag-scan-message[data-kind="error"]{color:#b42318}.tag-scan-candidate{margin-top:16px;padding:14px;border:1px solid #b7e4c7;border-radius:12px;background:#f0fbf4}.tag-scan-candidate strong{display:block;margin-bottom:8px}.tag-scan-candidate code{font:600 14px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+    .subject-list{display:grid;gap:10px}.subject-entry{display:grid;gap:0}.subject-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;transition:border-color .2s,background .2s}.subject-row-binding{border-color:#c7d7fb;background:#f7f9ff}.subject-name{margin:0;font-weight:650}.subject-tag{margin:3px 0 0;color:var(--muted);font:13px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.subject-bind{flex:none;padding:9px 12px;border:0;border-radius:10px;background:#edf3ff;color:var(--blue);font-size:13px;font-weight:650;white-space:nowrap}.subject-bind:hover{background:#e0eaff}.subject-delete{flex:none;display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border:0;border-radius:10px;background:#fff0ef;color:#b42318;font-size:13px;font-weight:650;white-space:nowrap}.subject-delete:hover{background:#ffe2df}.subject-delete svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.subject-status{min-height:22px;margin:0 0 14px;color:var(--muted);font-size:14px}.subject-status:empty{display:none}.subject-status[data-kind="error"]{color:#b42318}.subject-status[data-kind="success"]{color:#167647}#subjectsPanel h2{margin:0 0 8px;padding-top:22px;border-top:1px solid var(--line);font-size:20px;line-height:1.3;letter-spacing:-.02em}.subjects-empty{margin-top:4px;padding:24px 18px;border:1px dashed #cfd7e5;border-radius:14px;background:#fafbfe;text-align:center;color:var(--muted)}.subjects-empty-icon{width:42px;height:42px;margin:0 auto 10px;border-radius:13px;background:#eef3ff;color:var(--blue);display:grid;place-items:center}.subjects-empty-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.subjects-empty-title{margin:0;color:var(--ink);font-weight:650}.subjects-empty-text{margin:4px 0 0;font-size:14px}
     .field-label{display:block;margin:20px 0 8px}
     .field{width:100%;padding:14px 15px;border:1px solid #cfd7e5;border-radius:12px;background:#fff;color:var(--ink);outline:none;font:600 16px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em}
-    .class-select{padding-right:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23172033' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:14px 14px}
+    .class-select{padding-right:44px;font:600 16px system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23172033' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:14px 14px}
     .field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2864e81c}.field[readonly]{background:#f5f7fb;cursor:default}.field-label-row{display:flex;align-items:center;justify-content:space-between;margin-top:20px}.field-label-row label{margin:0 0 8px}.icon-button{width:36px;height:36px;margin:0 0 8px;padding:8px;border:0;border-radius:9px;background:#edf1f8;color:#44536b;display:grid;place-items:center}.icon-button:hover{background:#e1e8f4}.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.field-help{margin:8px 0 0;color:var(--muted);font-size:13px}
     .profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.profile-message{min-height:22px;margin:12px 0 0;color:#b42318;font-size:14px}.profile-message[data-kind="success"]{color:#167647}
     .confirm-dialog{width:min(100% - 32px,420px);padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);box-shadow:0 24px 80px #17203333}
@@ -96,9 +96,9 @@
         <div class="profile-top"><button id="backButton" class="button button-quiet" type="button" aria-label="Назад">← Назад</button></div>
         <div class="settings-tabs" role="tablist" aria-label="Разделы настроек">
           <button id="profileTab" class="settings-tab" type="button" role="tab" aria-selected="true" aria-controls="profileSettingsPanel">Профиль</button>
-          <button id="subjectsTab" class="settings-tab" type="button" role="tab" aria-selected="false" aria-controls="subjectsPanel">Предметы</button>
+          <button id="subjectsTab" class="settings-tab" type="button" role="tab" aria-selected="false" aria-controls="subjectsPanel" tabindex="-1">Предметы</button>
         </div>
-        <div id="profileSettingsPanel" role="tabpanel" aria-labelledby="profileTab">
+        <div id="profileSettingsPanel" role="tabpanel" aria-labelledby="profileTab" tabindex="0">
         <p class="eyebrow">Настройки устройства</p>
         <form id="profileForm" novalidate>
           <div class="field-label-row">
@@ -124,7 +124,7 @@
         </div>
         <p id="wifiResetMessage" class="profile-message" role="status" aria-live="polite"></p>
         </div>
-        <section id="subjectsPanel" role="tabpanel" aria-labelledby="subjectsTab" hidden>
+        <section id="subjectsPanel" role="tabpanel" aria-labelledby="subjectsTab" tabindex="0" hidden>
           <p class="eyebrow">Содержимое устройства</p>
           <div class="class-setting">
             <label for="deviceClassSelect">Учебный класс</label>
@@ -136,9 +136,11 @@
             </select>
             <p id="deviceClassMessage" class="class-setting-message" role="status" aria-live="polite">Подключите устройство, чтобы выбрать класс.</p>
           </div>
-          <h2>Предметы и RFID-метки</h2>          
+          <h2>Предметы и RFID-метки</h2>
           <p id="subjectStatus" class="subject-status" role="status" aria-live="polite">Ожидаем данные устройства…</p>
           <div id="addMappingPanel" class="mapping-form" hidden>
+            <p id="mappingSubjectTitle" class="mapping-title">Привязка метки</p>
+            <p class="mapping-hint">Поднесите к устройству одну метку и нажмите «Сканировать метку».</p>
             <div class="mapping-form-actions">
               <button id="scanTagButton" class="button button-secondary" type="button">Сканировать метку</button>
               <button id="cancelMappingButton" class="button button-quiet" type="button">Отмена</button>
@@ -151,6 +153,11 @@
             </div>
           </div>
           <div id="subjectsList" class="subject-list"></div>
+          <div id="subjectsEmpty" class="subjects-empty" hidden>
+            <span class="subjects-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.6 13.4 12 22l-9-9V4h9l8.6 8.6a2 2 0 0 1 0 2.8Z"></path><circle cx="7.5" cy="7.5" r="1.5"></circle></svg></span>
+            <p class="subjects-empty-title">Предметов пока нет</p>
+            <p class="subjects-empty-text">Здесь появятся предметы, когда они станут доступны.</p>
+          </div>
         </section>
       </section>
     </main>
@@ -220,7 +227,9 @@
       const deviceClassSelect = document.getElementById('deviceClassSelect');
       const deviceClassMessage = document.getElementById('deviceClassMessage');
       const subjectsList = document.getElementById('subjectsList');
+      const subjectsEmpty = document.getElementById('subjectsEmpty');
       const addMappingPanel = document.getElementById('addMappingPanel');
+      const mappingSubjectTitle = document.getElementById('mappingSubjectTitle');
       const scanTagButton = document.getElementById('scanTagButton');
       const cancelMappingButton = document.getElementById('cancelMappingButton');
       const tagScanMessage = document.getElementById('tagScanMessage');
@@ -235,6 +244,7 @@
       let deviceClassName = '';
       let deviceClassPending = false;
       let schoolSubjects = [];
+      let subjectsLoaded = false;
       let tagMappings = new Map();
       let pendingMappingDeletes = new Map();
       let editingProfile = false;
@@ -586,14 +596,18 @@
 
       function renderSubjectMappings() {
         subjectsList.replaceChildren();
+        const hasSubjects = schoolSubjects.length > 0;
+        subjectsList.hidden = !hasSubjects;
+        subjectsEmpty.hidden = !subjectsLoaded || hasSubjects;
         for (const subject of schoolSubjects) {
           const subjectId = Number(subject.id);
           const mapping = tagMappings.get(subjectId);
           const pending = pendingMappingDeletes.has(subjectId);
+          const isBinding = subjectId === activeMappingSubjectId && !mapping && !pending;
           const entry = document.createElement('div');
           entry.className = 'subject-entry';
           const row = document.createElement('article');
-          row.className = 'subject-row';
+          row.className = 'subject-row' + (isBinding ? ' subject-row-binding' : '');
 
           const details = document.createElement('div');
           const name = document.createElement('p');
@@ -612,7 +626,7 @@
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
             removeButton.className = 'subject-delete';
-            removeButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="m19 6-1 14H6L5 6"></path><path d="M10 11v5M14 11v5"></path></svg>';
+            removeButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="m19 6-1 14H6L5 6"></path><path d="M10 11v5M14 11v5"></path></svg><span>Отвязать</span>';
             removeButton.title = 'Удалить метку';
             removeButton.setAttribute('aria-label', 'Удалить RFID-метку для предмета ' + subject.name);
             removeButton.addEventListener('click', () => requestMappingDelete(subjectId));
@@ -627,7 +641,10 @@
             row.append(bindButton);
           }
           entry.append(row);
-          if (subjectId === activeMappingSubjectId && !mapping && !pending) entry.append(addMappingPanel);
+          if (isBinding) {
+            mappingSubjectTitle.textContent = 'Привязка метки — ' + subject.name;
+            entry.append(addMappingPanel);
+          }
           subjectsList.append(entry);
         }
       }
@@ -709,6 +726,8 @@
         subjectsPanel.hidden = !showSubjects;
         profileTab.setAttribute('aria-selected', String(!showSubjects));
         subjectsTab.setAttribute('aria-selected', String(showSubjects));
+        profileTab.tabIndex = showSubjects ? -1 : 0;
+        subjectsTab.tabIndex = showSubjects ? 0 : -1;
         if (showSubjects) renderSubjectMappings();
       }
 
@@ -837,9 +856,11 @@
             deviceClassMessage.textContent = message.message || 'Не удалось сохранить класс на устройстве.';
           } else if (message.type === 'subjects') {
             schoolSubjects = Array.isArray(message.subjects) ? message.subjects : [];
+            subjectsLoaded = true;
             renderSubjectMappings();
             renderSelectedSchedule();
-            subjectStatus.textContent = schoolSubjects.length ? 'Предметы загружены. Ожидаем привязки с устройства…' : 'Список предметов пуст.';
+            subjectStatus.dataset.kind = '';
+            subjectStatus.textContent = schoolSubjects.length ? 'Предметы загружены. Ожидаем привязки с устройства…' : '';
           } else if (message.type === 'classSchedule') {
             classSchedule = message.schedule || null;
             renderSelectedSchedule();
@@ -975,6 +996,24 @@
       document.getElementById('backButton').addEventListener('click', showHome);
       profileTab.addEventListener('click', () => setSettingsTab('profile'));
       subjectsTab.addEventListener('click', () => setSettingsTab('subjects'));
+      const settingsTablist = document.querySelector('.settings-tabs');
+      settingsTablist.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const tabs = [profileTab, subjectsTab];
+        const currentIndex = tabs.indexOf(document.activeElement);
+        const selectedIndex = subjectsTab.getAttribute('aria-selected') === 'true' ? 1 : 0;
+        const startIndex = currentIndex === -1 ? selectedIndex : currentIndex;
+        let nextIndex;
+        if (event.key === 'Home') nextIndex = 0;
+        else if (event.key === 'End') nextIndex = 1;
+        else {
+          const delta = event.key === 'ArrowRight' ? 1 : -1;
+          nextIndex = (startIndex + delta + tabs.length) % tabs.length;
+        }
+        tabs[nextIndex].focus();
+        setSettingsTab(nextIndex === 1 ? 'subjects' : 'profile');
+      });
       deviceClassSelect.addEventListener('change', requestDeviceClassChange);
       chooseClassButton.addEventListener('click', () => {
         showProfile();
