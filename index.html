@@ -278,6 +278,7 @@
       let currentLessons = [];
       let scheduleScanRunning = false;
       let lastScheduleScanTags = null;
+      let liveTagScanTags = null;
 
       function normalizeMac(value) {
         const normalized = value.trim().replace(/-/g, ':').toUpperCase();
@@ -554,13 +555,17 @@
         scanSuccess.hidden = !allFound;
         if (allFound) {
           scanNotice.dataset.kind = 'success';
-          scanNotice.textContent = '';
+          scanNotice.textContent = scheduleScanRunning
+            ? 'Все предметы найдены. Сканирование продолжается…'
+            : '';
         } else if (expectedSubjectIds.size === 0) {
           scanNotice.dataset.kind = '';
-          scanNotice.textContent = 'Сканирование завершено. Найдено меток: ' + tags.length + '.';
+          scanNotice.textContent = (scheduleScanRunning ? 'Сканирование идёт. ' : 'Сканирование завершено. ')
+            + 'Найдено меток: ' + tags.size + '.';
         } else {
           scanNotice.dataset.kind = '';
-          scanNotice.textContent = 'Найдено предметов: ' + detectedSubjectIds.size + ' из ' + expectedSubjectIds.size + '.';
+          scanNotice.textContent = (scheduleScanRunning ? 'Сканирование идёт. ' : '')
+            + 'Найдено предметов: ' + detectedSubjectIds.size + ' из ' + expectedSubjectIds.size + '.';
         }
       }
 
@@ -574,6 +579,16 @@
         lastScheduleScanTags = new Set(message.tags
           .filter(tag => typeof tag === 'string')
           .map(tag => tag.replace(/\s/g, '').toUpperCase()));
+        renderScheduleScanResults(lastScheduleScanTags);
+      }
+
+      function handleScheduleScanTag(message) {
+        if (!scheduleScanRunning || typeof message.rfidTag !== 'string') return;
+        const tag = message.rfidTag.replace(/\s/g, '').toUpperCase();
+        if (!tag) return;
+        if (!lastScheduleScanTags) lastScheduleScanTags = new Set();
+        if (lastScheduleScanTags.has(tag)) return;
+        lastScheduleScanTags.add(tag);
         renderScheduleScanResults(lastScheduleScanTags);
       }
 
@@ -606,7 +621,7 @@
           row.classList.remove('lesson-detected');
           row.querySelector('.lesson-result').textContent = 'Ожидает сканирования';
         }
-        scanNotice.textContent = 'Сканирование началось. Подождите 5 секунд…';
+        scanNotice.textContent = 'Сканирование идёт. Найденные метки появляются сразу…';
         try {
           activeSocket.send(JSON.stringify({ type: 'scanSchedule' }));
         } catch {
@@ -676,6 +691,7 @@
         tagCandidate.hidden = true;
         pendingTagCandidate = null;
         pendingTagScanSubjectId = 0;
+        liveTagScanTags = null;
         scanTagButton.disabled = false;
         tagScanMessage.textContent = '';
         addMappingPanel.hidden = false;
@@ -696,21 +712,37 @@
 
         pendingTagScanSubjectId = subjectId;
         pendingTagCandidate = null;
+        liveTagScanTags = new Set();
         tagCandidate.hidden = true;
         scanTagButton.disabled = true;
-        tagScanMessage.textContent = 'Поднесите к устройству одну метку. Сканирование длится 2 секунды…';
+        tagScanMessage.textContent = 'Поднесите к устройству одну метку. Она появится сразу после обнаружения…';
         try {
           activeSocket.send(JSON.stringify({ type: 'scanTag', subjectId }));
         } catch {
           pendingTagScanSubjectId = 0;
+          liveTagScanTags = null;
           scanTagButton.disabled = false;
           tagScanMessage.textContent = 'Не удалось отправить команду сканирования.';
         }
       }
 
+      function handleTagScanTag(message) {
+        if (!pendingTagScanSubjectId || Number(message.subjectId) !== pendingTagScanSubjectId) return;
+        if (typeof message.rfidTag !== 'string') return;
+        const tag = message.rfidTag.replace(/\s/g, '').toUpperCase();
+        if (!tag) return;
+        if (!liveTagScanTags) liveTagScanTags = new Set();
+        if (liveTagScanTags.has(tag)) return;
+        liveTagScanTags.add(tag);
+        tagScanMessage.textContent = liveTagScanTags.size === 1
+          ? 'Обнаружена метка · ' + formatRfidTag(tag) + '. Сканирование продолжается…'
+          : 'Обнаружено несколько меток. Уберите лишние, сканирование продолжается…';
+      }
+
       function handleTagScanResult(message) {
         if (!pendingTagScanSubjectId || Number(message.subjectId) !== pendingTagScanSubjectId) return;
         pendingTagScanSubjectId = 0;
+        liveTagScanTags = null;
         scanTagButton.disabled = false;
         confirmTagButton.disabled = false;
         if (message.success && typeof message.rfidTag === 'string') {
@@ -897,13 +929,17 @@
             classSchedule = message.schedule || null;
             renderSelectedSchedule();
           } else if (message.type === 'scheduleScanQueued') {
-            scanNotice.textContent = 'Устройство сканирует RFID-метки 5 секунд…';
+            scanNotice.textContent = 'Устройство сканирует RFID-метки (до 5 секунд). Найденные метки появляются сразу…';
+          } else if (message.type === 'scheduleScanTag') {
+            handleScheduleScanTag(message);
           } else if (message.type === 'scheduleScanResult') {
             applyScheduleScanResult(message);
           } else if (message.type === 'tagMappings') {
             applyTagMappings(message);
           } else if (message.type === 'tagScanQueued') {
-            tagScanMessage.textContent = 'Устройство сканирует метку в течение 2 секунд…';
+            tagScanMessage.textContent = 'Устройство сканирует метку. Обнаруженная метка появится сразу…';
+          } else if (message.type === 'tagScanTag') {
+            handleTagScanTag(message);
           } else if (message.type === 'tagScanResult') {
             handleTagScanResult(message);
           } else if (message.type === 'tagMappingConfirmQueued') {
@@ -966,6 +1002,7 @@
             if (scheduleScanRunning) resetScheduleScanControls();
             if (pendingTagScanSubjectId) tagScanMessage.textContent = 'Устройство не в сети. Попробуйте позже.';
             pendingTagScanSubjectId = 0;
+            liveTagScanTags = null;
             scanTagButton.disabled = false;
             setDeviceState('Устройство не в сети');
             restorePendingMappingDeletes();
@@ -988,6 +1025,7 @@
             confirmTagButton.disabled = false;
             if (pendingTagScanSubjectId) tagScanMessage.textContent = message.message || 'Ошибка сканирования.';
             pendingTagScanSubjectId = 0;
+            liveTagScanTags = null;
             scanTagButton.disabled = false;
             if (pendingMappingDeletes.size) restorePendingMappingDeletes();
             subjectStatus.dataset.kind = 'error';
@@ -1055,6 +1093,7 @@
         addMappingPanel.hidden = true;
         activeMappingSubjectId = 0;
         pendingTagScanSubjectId = 0;
+        liveTagScanTags = null;
         scanTagButton.disabled = false;
         pendingTagCandidate = null;
         renderSubjectMappings();
